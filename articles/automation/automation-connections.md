@@ -49,7 +49,7 @@ The function in the following table is used to access connections in a Python2 r
 |:---|:---| 
 | automationassets.get_automation_connection | Retrieves a connection. Returns a dictionary with the properties of the connection. | 
 
-> [!NOTE] 
+$Conn.CertificateThumbprint> [!NOTE] 
 > You must import the "automationassets" module at the top of your Python runbook in order to access the asset functions.
 
 ## Creating a New Connection
@@ -86,7 +86,7 @@ The following sample commands show how to use the Run As account mentioned earli
 
 ```powershell
 $Conn = Get-AutomationConnection -Name AzureRunAsConnection 
-Add-AzureRMAccount -ServicePrincipal -Tenant $Conn.TenantID -ApplicationId $Conn.ApplicationID -CertificateThumbprint 
+Add-AzureRMAccount -ServicePrincipal -Tenant $Conn.TenantID -ApplicationId $Conn.ApplicationID -CertificateThumbprint $Conn.CertificateThumbprint
 ```
 
 ### Graphical runbook samples
