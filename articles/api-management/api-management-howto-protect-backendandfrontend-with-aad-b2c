@@ -32,17 +32,17 @@ The ‘logged in as’ is picked up from the client side token when we log in, t
 To follow the steps in this article, you must have:
 * An Azure v2 Storage Account to host the frontend JS Single Page App
 * An API Management instance
-* A Function app to host the back end API (sample code provided)
-* An Azure AD B2C tenant
+* An empty Function app (v1 runtime) to host the back end API (sample code provided)
+* An Azure AD B2C tenant, linked to a subscription 
 
 ## Overview
 
 Here is a quick overview of the steps:
 
-1. Crate the AAD B2C User Attributes to capture the custom claims
+1. Create the AAD B2C User Attributes to capture the custom claims
 2. Create the AAD Calling (Frontend, API-M) and API Applications with scopes and grant API Access
 3. Create the Signup or signin policies to allow users to login with AAD B2C
-4. Configure API Management with the new AAD B2C Client IDs and keys to use the developer portal to test the API.
+4. Configure API Management with the new AAD B2C Client IDs and keys to Enable OAuth 2.0 user authorization in the Developer Console
 5. Build the Function API
 6. Configure the Function API to enable EasyAuth with the new AAD B2C Client ID’s and Keys and lock down to APIM VIP 
 7. Build the API Definition in API Management
@@ -56,123 +56,107 @@ Here is a quick overview of the steps:
 15. Configure the Function API to serve as a useful reminder countdown
 16. Test the Client Application
 
---- tbc --- work in progress ---
+# Create the AAD B2C User Attributes to capture the custom claims
 
-## Register an application in Azure AD to represent the API
+Before we can capture and flow any custom claims or register the applications that we intend to use, we need to create the AAD B2C user attributes inside the AAD B2C tenant, effectively you just created and assigned application permissions for your calling API.
 
-To protect an API with Azure AD, the first step is to register an application in Azure AD that represents the API. 
-
-1. Browse to your Azure AD tenant, and then browse to **App registrations**.
-
-2. Select **New application registration**. 
-
-3. Provide a name of the application. (For this example, the name is `backend-app`.)  
-
-4. Choose **Web app / API** as the **Application type**. 
-
-5. For **Sign-on URL**, you can use `https://localhost` as a placeholder.
-
-6. Select **Create**.
-
-When the application is created, make a note of the **Application ID**, for use in a subsequent step. 
-
-## Register another application in Azure AD to represent a client application
-
-Every client application that calls the API needs to be registered as an application in Azure AD as well. For this example, the sample client application is the Developer Console in the API Management developer portal. Here's how to register another application in Azure AD to represent the Developer Console.
-
-1. Select **New application registration**. 
-
-2. Provide a name of the application. (For this example, the name is `client-app`.)
-
-3. Choose **Web app / API** as the **Application type**.  
-
-4. For **Sign-on URL**, you can use `https://localhost` as a placeholder, or use the sign-in URL of your API Management instance. (For this example, the URL is `https://contoso5.portal.azure-api.net/signin`.)
-
-5. Select **Create**.
-
-When the application is created, make a note of the **Application ID**, for use in a subsequent step. 
-
-Now, create a client secret for this application, for use in a subsequent step.
-
-1. Select **Settings** again, and go to **Keys**.
-
-2. Under **Passwords**, provide a **Key description**. Choose when the key should expire, and select **Save**.
-
-Make a note of the key value. 
-
-## Grant permissions in Azure AD
-
-Now that you have registered two applications to represent the API and the Developer Console, you need to grant permissions to allow the client-app to call the backend-app.  
-
-1. Browse to **Application registrations**. 
-
-2. Select `client-app`, and go to **Settings**.
-
-3. Select **Required permissions** > **Add**.
-
-4. Select **Select an API**, and search for `backend-app`.
-
-5. Under **Delegated Permissions**, select `Access backend-app`. 
-
-6. Select **Select**, and then select **Done**. 
+1. Open the Azure Portal, switch your tenant to the AAD B2C tenant and browse to the **Azure Active Directory B2C** blade 
+2. Select the **Overview** tab and record the domain name of the tenant for later use.
+3. Select the **User Attributes** tab and add a custom string attribute called CRM_ID of type string
 
 > [!NOTE]
-> If **Azure Active Directory** is not listed under permissions to other applications, select **Add** to add it from the list.
+> Custom attributes are accessible from AAD B2C policies and are returned optionally as claims in the auth token that is issued, this is a convenient way of securely storing additional metadata about users in AAD B2C.
+> You can also manipulate and read this data as an administrator using the AAD Graph API.
 
-## Enable OAuth 2.0 user authorization in the Developer Console
+# Create the AAD Calling (Frontend, API-M) and Backend API Applications with scopes and grant API Access
 
-At this point, you have created your applications in Azure AD, and have granted proper permissions to allow the client-app to call the backend-app. 
+1. Select the **Applications** tab 
+2. Click the 'Add' button and create 3 applications
+* The Frontend Client, 
+* The Backend Function API,
+* The API-Management developer portal (unless you are running APIM in consumption mode)
 
-In this example, the Developer Console is the client-app. The following steps describe how to enable OAuth 2.0 user authorization in the Developer Console. 
+3. Use placeholders for the reply urls for now, we’ll update those later.
+4. For the App ID URI simply choose something unique and relevant to the service being created.
+5. Set WebApp/ Web API and Allow Implicit flow to yes
+6. Record the AppID URI, name and Application ID for later use for all 3 apps.
 
-1. In Azure Portal, browse to your API Management instance.
+7. Open the Backend API from the list of applications and select the *Keys* tab (under General) to generate an auth key
+8. Record the key somewhere safe for later use
+9. Now select the *Published Scopes* Tab (Under API Access)
+10. Create and name a scope for your Function API 
 
-2. Select **OAuth 2.0** > **Add**.
+> [!NOTE]
+> AAD B2C scopes are effectively permissions within your API that other applications can request access to via the API access blade from their applications, effectively you just created and assigned application permissions for your calling API.
 
-3. Provide a **Display name** and **Description**.
+11. Open the other 2 applications and under the *API Access* tab, grant them access to the backend API scope (that you just created) and the default one that was already there ("login as user") 
+12. Generate them a key each (select the *Keys* tab (under General) to generate an auth key) whilst you are here and record those somewhere safe too.
 
-4. For the **Client registration page URL**, enter a placeholder value, such as `http://localhost`. The **Client registration page URL** points to the page that users can use to create and configure their own accounts for OAuth 2.0 providers that support this. In this example, users do not create and configure their own accounts, so you use a placeholder instead.
+# Create a "Signup or signin" policy to allow users to login with AAD B2C
+1. Return to the root of the AAD B2C Blade 
+2. Then select “Sign-up or Sign-in Policies” and click ‘add’
+3. Give the policy a name (and record it for later) and select 'Identity providers', then check User ID signup and click OK. 
+4. Select 'Signup attributes' and choose the registration options that you want your customers to enter (At a minimum, choose Email, Display Name and Country/Region), then click OK.
+5. Select 'Application Claims' and choose 'Country/Region', 'Display Name', CRM_ID, 'User's Object ID' and 'User is new', then click OK.
+6. Click OK again to return to the main AAD B2C blade, now select the policy you just created in the list to re-open it, then record the address of the b2clogin.com domain from the .
+7. Click on the link at the top for the well-known openid confguration endpoint and record the authorization_endpoint and token_endpoint values from the opened document.
 
-5. For **Authorization grant types**, select **Authorization code**.
+> [!NOTE]
+> B2C Policies allow you to expose the AAD B2C login endpoints to be able to capture different data components and log in users in different ways
+> In this case we configured a sign up and sign in endpoint, which exposed a well-known condfiguration endpoint, specifically our created policy was identified in the URL by the p= parameter
+> Once this is done – you now have a functional Business to Consumer identity platform that will sign users into multiple applications. 
 
-6. Specify the **Authorization endpoint URL** and **Token endpoint URL**. Retrieve these values from the **Endpoints** page in your Azure AD tenant. Browse to the **App registrations** page again, and select **Endpoints**.
+# [Optional] Configure API Management with the new AAD B2C Client IDs and keys to to Enable OAuth 2.0 user authorization in the Developer Console
+1. Switch back to your standard AAD tenant in the Azure portal and open the *API management blade*, then open *your instance*.
+2. Note down the *Virtual IP (VIP) address* of the instance, and optionally the *developer portal URL* and record them for later.
+3. Next, Select the Oauth 2.0  blade from the Security Tab, and click 'Add'
+4. Give sensible values for *Display Name* and *Description*
+5. You can enter any value in the Client registration page URL, as we will not use it here
+6. Check the *Authorization code* and *Implicit Auth* Grant types
+7. In the *Authorization* and *Token* endpoint fields enter the values you captured from the well-known configuration xml document earlier.
+8. Scroll down and populate an *Additional body parameter* called 'resource' with the Back end Function API client ID from the AAD B2C App registration
+9. Set the Client credentials section upSet the Client ID to the APIM Developer console app's application ID and set the Client Secret to the APIM developer console app's Key) 
+10. Lastly, now record the redirect_uri of the auth code grant from APIM 'This is what the redirect_uri for authorization code grant looks like' for later use.
 
-    >[!NOTE]
-    > Use the **v1** endpoints here
+> [!NOTE]
+> Now we have an API Management instance that knows how to get access tokens from AAD B2C to authorize requests through the developer portal for testing.
 
-7. Copy the **OAuth 2.0 Authorization Endpoint**, and paste it into the **Authorization endpoint URL** text box.
+# Build the Function API
+1. Go to the Function Apps blade of the azure portal, open the function app and create a new http triggered C# function,
+2. Set it’s name to HttpTriggerC# and it’s auth level to Anonymous (we will secure this, but not by using a function key or admin key).
+3. Paste the sample code from this link into Run.csx over the existing code that appears.
+4. Select “Integrate” from the left-hand blade, then select ‘Advanced Editor’.
+5. Paste the sample code over the existing json that appears to remove the post method and add the custom route to make the API respond on {http://fnappname.azurewebsites.net/api/celebration}, then click save
+6. Reselect the HttpTriggerCSharp1 item from the list on the left hand side, then select the ‘View Files’ tab on the right hand side.
+7. Click ‘Add’ and name the file project.json, an empty file will be created.
+8. Post the sample code into that file and click save.
 
-8. Copy the **OAuth 2.0 Token Endpoint**, and paste it into the **Token endpoint URL** text box. In addition to pasting in the token endpoint, add a body parameter named **resource**. For the value of this parameter, use the **Application ID** for the back-end app.
+> [!NOTE]
+> Now we have a very simplistic backend serverless http API, that is capable of validating tokens and returning a simple payload.
+> Basically all this function does is checks a few claims on the provided access token and returns some static data for the website to render.
+> You should see something like this returned if you are correctly signed in and the value of cclaim_CRM should be set to the custom claim we defined in the AAD B2C configuration, note that if you haven’t set this claim – then the API should throw a 403 Forbidden message at you see the profile editing policy section, if the token is not present then APIM should throw a 401 Unauthorized message.
+>{
+>   "date":"20181014",
+>   "location":"Whatever you choose as the location",
+>   "time":"1400",
+>   "cclaim_CRM":"Will001"
+>}
 
-9. Next, specify the client credentials. These are the credentials for the client-app.
+# Configure the Function API to enable EasyAuth with the new AAD B2C Client ID’s and Keys and lock down to APIM VIP 
 
-10. For **Client ID**, use the **Application ID** for the client-app.
 
-11. For **Client secret**, use the key you created for the client-app earlier. 
+-- TBC --
 
-12. Immediately following the client secret is the **redirect_url** for the authorization code grant type. Make a note of this URL.
-
-13. Select **Create**.
-
-14. Go back to the **Settings** page of your client-app.
-
-15. Select **Reply URLs**, and paste the **redirect_url** in the first row. In this example, you replaced `https://localhost` with the URL in the first row.  
-
-Now that you have configured an OAuth 2.0 authorization server, the Developer Console can obtain access tokens from Azure AD. 
-
-The next step is to enable OAuth 2.0 user authorization for your API. This enables the Developer Console to know that it needs to obtain an access token on behalf of the user, before making calls to your API.
-
-1. Browse to your API Management instance, and go to **APIs**.
-
-2. Select the API you want to protect. In this example, you use the `Echo API`.
-
-3. Go to **Settings**.
-
-4. Under **Security**, choose **OAuth 2.0**, and select the OAuth 2.0 server you configured earlier. 
-
-5. Select **Save**.
-
-## Successfully call the API from the developer portal
+7. Build the API Definition in API Management
+8. Set up Oauth2 for the API-M API configuration
+9. Setup CORS and Add the **validate-jwt** policy to validate the OAuth token for every incoming request.
+10. Setup the custom claim data
+11. Test the API from the APIM Portal 
+12. Build the calling application to consume the API
+13. Upload the JS SPA Sample
+14. Configure the Sample JS Client App with the new AAD B2C Client ID’s and keys 
+15. Configure the Function API to serve as a useful reminder countdown
+16. Test the Client Application
 
 > [!NOTE]
 > This section does not apply to the **Consumption** tier, which does not support the developer portal.
@@ -216,6 +200,10 @@ You can use the [Validate JWT](api-management-access-restriction-policies.md#Val
 ## Build an application to call the API
 
 In this guide, you used the Developer Console in API Management as the sample client application to call the `Echo API` protected by OAuth 2.0. To learn more about how to build an application and implement OAuth 2.0, see [Azure Active Directory code samples](../active-directory/develop/sample-v1-code.md).
+
+
+
+
 
 ## Next steps
 * Learn more about [Azure Active Directory and OAuth2.0](../active-directory/develop/authentication-scenarios.md).
