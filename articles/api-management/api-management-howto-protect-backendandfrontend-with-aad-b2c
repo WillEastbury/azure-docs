@@ -1,6 +1,8 @@
 ---
-title: Protect an API by using OAuth 2.0 with Azure Active Directory and API Management | Microsoft Docs
-description: Learn how to protect a web API backend with Azure Active Directory and API Management.
+title: Protect an API and flow custom claims by using OAuth 2.0 with Azure Active Directory and API Management | Microsoft Docs
+description: Protect an API by using OAuth 2.0 with Azure Active Directory B2C, API Management and Azure App Service Easy Auth and call it from a JavaScript Single Page App
+
+.
 services: api-management
 documentationcenter: ''
 author: wieastbu
@@ -31,11 +33,24 @@ To follow the steps in this article, you must have:
 
 Here is a quick overview of the steps:
 
-1. Register an application (backend-app) in Azure AD to represent the API.
-2. Register another application (client-app) in Azure AD to represent a client application that needs to call the API.
-3. In Azure AD, grant permissions to allow the client-app to call the backend-app.
-4. Configure the Developer Console to use OAuth 2.0 user authorization.
-5. Add the **validate-jwt** policy to validate the OAuth token for every incoming request.
+1. Crate the AAD B2C User Attributes to capture the custom claims
+2. Create the AAD Calling (Frontend, API-M) and API Applications with scopes and grant API Access
+3. Create the Signup or signin policies to allow users to login with AAD B2C
+4. Configure API Management with the new AAD B2C Client IDs and keys to use the developer portal to test the API.
+5. Build the Function API
+6. Configure the Function API to enable EasyAuth with the new AAD B2C Client ID’s and Keys and lock down to APIM VIP 
+7. Build the API Definition in API Management
+8. Set up Oauth2 for the API-M API configuration
+9. Setup CORS and Add the **validate-jwt** policy to validate the OAuth token for every incoming request.
+10. Setup the custom claim data
+11. Test the API from the APIM Portal 
+12. Build the calling application to consume the API
+13. Upload the JS SPA Sample
+14. Configure the Sample JS Client App with the new AAD B2C Client ID’s and keys 
+15. Configure the Function API to serve as a useful reminder countdown
+16. Test the Client Application
+
+--- tbc --- work in progress ---
 
 ## Register an application in Azure AD to represent the API
 
