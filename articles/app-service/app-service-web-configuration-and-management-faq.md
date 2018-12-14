@@ -1,5 +1,5 @@
 ---
-title: Configuration FAQs for Azure web apps | Microsoft Docs
+title: Configuration FAQs - Azure App Service | Microsoft Docs
 description: Get answers to frequently asked questions about configuration and management issues for the Web Apps feature of Azure App Service.
 services: app-service\web
 documentationcenter: ''
@@ -14,7 +14,7 @@ ms.workload: web
 ms.tgt_pltfrm: ibiza
 ms.devlang: na
 ms.topic: article
-ms.date: 11/03/2017
+ms.date: 10/30/2018
 ms.author: genli
 
 ---
@@ -81,7 +81,7 @@ To get the list of outbound IP addresses for your web app:
 
 The list of outbound IP addresses appears.
 
-If your website is hosted in App Service Environment for PowerApps, to learn how to get your outbound IP address, see [Outbound network addresses](environment/app-service-app-service-environment-network-architecture-overview.md#outbound-network-addresses).
+To learn how to get the outbound IP address if your website is hosted in an App Service Environment, see [Outbound network addresses](environment/app-service-app-service-environment-network-architecture-overview.md#outbound-network-addresses).
 
 ## How do I get a reserved or dedicated inbound IP address for my web app?
 
@@ -102,7 +102,7 @@ For more information, see [FAQs for App Service certificates and custom domains]
 
 ## Why do I see the message "Partially Succeeded" when I try to back up my web app?
 
-A common cause of backup failure is that some files are in use by the application. Files that are in use are locked while you perform the backup. This prevents these files from being backed up and might result in a "Partially Succeeded" status. You can potentially prevent this from occurring by excluding files from the backup process. You can choose to back up only what is needed. For more information, see [Backup just the important parts of your site with Azure web apps](http://www.zainrizvi.io/2015/06/05/creating-partial-backups-of-your-site-with-azure-web-apps/).
+A common cause of backup failure is that some files are in use by the application. Files that are in use are locked while you perform the backup. This prevents these files from being backed up and might result in a "Partially Succeeded" status. You can potentially prevent this from occurring by excluding files from the backup process. You can choose to back up only what is needed. For more information, see [Backup just the important parts of your site with Azure web apps](https://zainrizvi.io/blog/creating-partial-backups-of-your-site-with-azure-web-apps/).
 
 ## How do I remove a header from the HTTP response?
 
@@ -144,7 +144,7 @@ Exception: System.Data.Entity.Core.EntityException: The underlying provider fail
 
 ### Resolution
 
-We are working to update Hybrid Connection Manager to fix this issue. For workarounds, see [Hybrid Connections error with SQL Server: System.OverflowException: Arithmetic operation resulted in an overflow](https://blogs.msdn.microsoft.com/waws/2016/05/17/hybrid-connection-error-with-sql-server-system-overflowexception-arithmetic-operation-resulted-in-an-overflow/).
+The exception was caused by an issue with the Hybrid Connection Manager that has since been fixed. Be sure to [update your Hybrid Connection Manager](https://go.microsoft.com/fwlink/?LinkID=841308) to resolve this issue.
 
 ## How do I add or edit a URL rewrite rule?
 
@@ -191,7 +191,7 @@ You have two options for capturing an F12 trace:
 3. Right-click in the message area of the pane, and then select **Copy all**.
 4. Paste the copied text in a file, and then save the file.
 
-To view an HAR file, you can use the [HAR viewer](http://www.softwareishard.com/har/viewer/).
+To view an HAR file, you can use the [HAR viewer](https://www.softwareishard.com/har/viewer/).
 
 ## Why do I get an error when I try to connect an App Service web app to a virtual network that is connected to ExpressRoute?
 
@@ -248,7 +248,7 @@ For more information about scheduled WebJobs, see [Create a scheduled WebJob by 
 
 ## How do I perform penetration testing for my App Service app?
 
-To perform penetration testing, [submit a request](https://security-forms.azure.com/penetration-testing/terms).
+To perform penetration testing, [submit a request](https://portal.msrc.microsoft.com/en-us/engage/pentest).
 
 ## How do I configure a custom domain name for an App Service web app that uses Traffic Manager?
 
@@ -265,7 +265,7 @@ As the message indicates, this fraud verification process might take up to 24 ho
 If your App Service certificate continues to show this message after 24 hours, please run the following PowerShell script. The script contacts the [certificate provider](https://www.godaddy.com/) directly to resolve the issue.
 
 ```
-Login-AzureRmAccount
+Connect-AzureRmAccount
 Set-AzureRmContext -SubscriptionId <subId>
 $actionProperties = @{
     "Name"= "<Customer Email Address>"
@@ -284,7 +284,7 @@ For detailed documentation for authentication and authorization in App Service, 
 
 ## How do I redirect the default *.azurewebsites.net domain to my Azure web app's custom domain?
 
-When you create a new website by using Web Apps in Azure, a default *sitename*.azurewebsites.net domain is assigned to your site. If you add a custom host name to your site and don’t want users to be able to access your default *.azurewebsites.net domain, you can redirect the default URL. To learn how to redirect all traffic from your website's default domain to your custom domain, see [Redirect the default domain to your custom domain in Azure web apps](http://www.zainrizvi.io/2016/04/07/block-default-azure-websites-domain/).
+When you create a new website by using Web Apps in Azure, a default *sitename*.azurewebsites.net domain is assigned to your site. If you add a custom host name to your site and don’t want users to be able to access your default *.azurewebsites.net domain, you can redirect the default URL. To learn how to redirect all traffic from your website's default domain to your custom domain, see [Redirect the default domain to your custom domain in Azure web apps](https://zainrizvi.io/blog/block-default-azure-websites-domain/).
 
 ## How do I determine which version of .NET version is installed in App Service?
 
@@ -292,7 +292,7 @@ The quickest way to find the version of Microsoft .NET that's installed in App S
 
 ## Why isn't Autoscale working as expected?
 
-If Azure Autoscale hasn't scaled in or scaled out the web app instance as you expected, you might be running into a scenario in which we intentionally choose not to scale to avoid an infinite loop due to "flapping." This usually happens when there isn't an adequate margin between the scale-out and scale-in thresholds. To learn how to avoid "flapping" and to read about other Autoscale best practices, see [Autoscale best practices](../monitoring-and-diagnostics/insights-autoscale-best-practices.md#autoscale-best-practices).
+If Azure Autoscale hasn't scaled in or scaled out the web app instance as you expected, you might be running into a scenario in which we intentionally choose not to scale to avoid an infinite loop due to "flapping." This usually happens when there isn't an adequate margin between the scale-out and scale-in thresholds. To learn how to avoid "flapping" and to read about other Autoscale best practices, see [Autoscale best practices](../azure-monitor/platform/autoscale-best-practices.md#autoscale-best-practices).
 
 ## Why does Autoscale sometimes scale only partially?
 
@@ -316,4 +316,4 @@ You also can specify the specific dynamic and static MIME types that you want to
 
 ## How do I migrate from an on-premises environment to App Service?
 
-To migrate sites from Windows and Linux web servers to App Service, you can use Azure App Service Migration Assistant. The migration tool creates web apps and databases in Azure as needed, and then publishes the content. For more information, see [Azure App Service Migration Assistant](https://www.movemetothecloud.net/).
+To migrate sites from Windows and Linux web servers to App Service, you can use Azure App Service Migration Assistant. The migration tool creates web apps and databases in Azure as needed, and then publishes the content. For more information, see [Azure App Service Migration Assistant](https://www.migratetoazure.net/).

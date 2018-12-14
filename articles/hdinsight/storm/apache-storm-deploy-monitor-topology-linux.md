@@ -1,26 +1,18 @@
 ---
-title: Deploy and manage Apache Storm topologies on Linux-based HDInsight | Microsoft Docs
+title: Deploy and manage Apache Storm topologies on Azure HDInsight 
 description: Learn how to deploy, monitor and manage Apache Storm topologies using the Storm Dashboard on Linux-based HDInsight. Use Hadoop tools for Visual Studio.
 services: hdinsight
-documentationcenter: ''
-author: Blackmist
-manager: jhubbard
-editor: cgronlun
-
-ms.assetid: 35086e62-d6d8-4ccf-8cae-00073464a1e1
 ms.service: hdinsight
+author: hrasheed-msft
+ms.author: hrasheed
+ms.reviewer: jasonh
 ms.custom: hdinsightactive
-ms.devlang: na
-ms.topic: article
-ms.tgt_pltfrm: na
-ms.workload: big-data
-ms.date: 09/07/2017
-ms.author: larryfr
-
+ms.topic: conceptual
+ms.date: 02/22/2018
 ---
-# Deploy and manage Apache Storm topologies on HDInsight
+# Deploy and manage Apache Storm topologies on Azure HDInsight 
 
-In this document, learn the basics of managing and monitoring Storm topologies running on Storm on HDInsight clusters.
+In this document, learn the basics of managing and monitoring [Apache Storm](http://storm.apache.org/) topologies running on Storm on HDInsight clusters.
 
 > [!IMPORTANT]
 > The steps in this article require a Linux-based Storm on HDInsight cluster. Linux is the only operating system used on HDInsight version 3.4 or greater. For more information, see [HDInsight retirement on Windows](../hdinsight-component-versioning.md#hdinsight-windows-retirement). 
@@ -38,9 +30,9 @@ In this document, learn the basics of managing and monitoring Storm topologies r
 
     One of the following versions of Visual Studio:
 
-  * Visual Studio 2012 with [Update 4](http://www.microsoft.com/download/details.aspx?id=39305)
+  * Visual Studio 2012 with Update 4
 
-  * Visual Studio 2013 with [Update 4](http://www.microsoft.com/download/details.aspx?id=44921) or [Visual Studio 2013 Community](http://go.microsoft.com/fwlink/?LinkId=517284)
+  * Visual Studio 2013 with Update 4 or [Visual Studio 2013 Community](https://go.microsoft.com/fwlink/?LinkId=517284)
   * [Visual Studio 2015](https://www.visualstudio.com/downloads/)
 
   * Visual Studio 2015 (any edition)
@@ -188,7 +180,7 @@ Selecting a link from the **Topology summary** section displays the following in
   * **Deactivate**: Pauses a running topology.
   * **Rebalance**: Adjusts the parallelism of the topology. You should rebalance running topologies after you have changed the number of nodes in the cluster. This operation allows the topology to adjust parallelism to compensate for the increased or decreased number of nodes in the cluster.
 
-    For more information, see <a href="http://storm.apache.org/documentation/Understanding-the-parallelism-of-a-Storm-topology.html" target="_blank">Understanding the parallelism of a Storm topology</a>.
+    For more information, see <a href="http://storm.apache.org/documentation/Understanding-the-parallelism-of-a-Storm-topology.html" target="_blank">Understanding the parallelism of an Apache Storm topology</a>.
   * **Kill**: Terminates a Storm topology after the specified timeout.
 * **Topology stats**: Statistics about the topology. To set the timeframe for the remaining entries on the page, use the links in the **Window** column.
 * **Spouts**: The spouts used by the topology. Use the links in this section to view more information about specific spouts.
@@ -210,10 +202,10 @@ Selecting a spout from the **Spouts** or **Bolts** sections displays the followi
 
 The Storm UI is built on top of the REST API, so you can perform similar management and monitoring functionality by using the REST API. You can use the REST API to create custom tools for managing and monitoring Storm topologies.
 
-For more information, see [Storm UI REST API](http://storm.apache.org/releases/0.9.6/STORM-UI-REST-API.html). The following information is specific to using the REST API with Apache Storm on HDInsight.
+For more information, see [Apache Storm UI REST API](http://storm.apache.org/releases/current/STORM-UI-REST-API.html). The following information is specific to using the REST API with Apache Storm on HDInsight.
 
 > [!IMPORTANT]
-> The Storm REST API is not publicly available over the internet, and must be accessed using an SSH tunnel to the HDInsight cluster head node. For information on creating and using an SSH tunnel, see [Use SSH Tunneling to access Ambari web UI, ResourceManager, JobHistory, NameNode, Oozie, and other web UIs](../hdinsight-linux-ambari-ssh-tunnel.md).
+> The Storm REST API is not publicly available over the internet, and must be accessed using an SSH tunnel to the HDInsight cluster head node. For information on creating and using an SSH tunnel, see [Use SSH Tunneling to access Apache Ambari web UI, ResourceManager, JobHistory, NameNode, Apache Oozie, and other web UIs](../hdinsight-linux-ambari-ssh-tunnel.md).
 
 ### Base URI
 
@@ -223,7 +215,7 @@ You can find the fully qualified domain name (FQDN) for the cluster head node in
 
 * **From an SSH session**: Use the command `headnode -f` from an SSH session to the cluster.
 * **From Ambari Web**: Select **Services** from the top of the page, then select **Storm**. From the **Summary** tab, select **Storm UI Server**. The FQDN of the node that hosts the Storm UI and REST API is displayed at the top of the page.
-* **From Ambari REST API**: Use the command `curl -u admin:PASSWORD -G "https://CLUSTERNAME.azurehdinsight.net/api/v1/clusters/CLUSTERNAME/services/STORM/components/STORM_UI_SERVER"` to retrieve information about the node that the Storm UI and REST API are running on. Replace **PASSWORD** with the admin password for the cluster. Replace **CLUSTERNAME** with the cluster name. In the response, the "host_name" entry contains the FQDN of the node.
+* **From Ambari REST API**: Use the command `curl -u admin -G "https://CLUSTERNAME.azurehdinsight.net/api/v1/clusters/CLUSTERNAME/services/STORM/components/STORM_UI_SERVER"` to retrieve information about the node that the Storm UI and REST API are running on. Replace **CLUSTERNAME** with the cluster name. When prompted, enter the password for the login (admin) account. In the response, the "host_name" entry contains the FQDN of the node.
 
 ### Authentication
 
@@ -234,10 +226,10 @@ Requests to the REST API must use **basic authentication**, so you use the HDIns
 
 ### Return values
 
-Information that is returned from the REST API may only be usable from within the cluster. For example, the fully qualified domain name (FQDN) returned for Zookeeper servers is not accessible from the Internet.
+Information that is returned from the REST API may only be usable from within the cluster. For example, the fully qualified domain name (FQDN) returned for [Apache ZooKeeper](https://zookeeper.apache.org/) servers is not accessible from the Internet.
 
 ## Next Steps
 
-Learn how to [Develop Java-based topologies using Maven](apache-storm-develop-java-topology.md).
+Learn how to [Develop Java-based topologies using Apache Maven](apache-storm-develop-java-topology.md).
 
-For a list of more example topologies, see [Example topologies for Storm on HDInsight](apache-storm-example-topology.md).
+For a list of more example topologies, see [Example topologies for Apache Storm on HDInsight](apache-storm-example-topology.md).

@@ -1,30 +1,22 @@
 ---
-title: Apache Sqoop with Hadoop - Azure HDInsight | Microsoft Docs
-description: Learn how to use Apache Sqoop to import and export between Hadoop on HDInsight and an Azure SQL Database.
-editor: cgronlun
-manager: jhubbard
-services: hdinsight
-documentationcenter: ''
-author: Blackmist
-tags: azure-portal
+title: Apache Sqoop with Apache Hadoop - Azure HDInsight 
+description: Learn how to use Apache Sqoop to import and export between Apache Hadoop on HDInsight and an Azure SQL Database.
 keywords: hadoop sqoop,sqoop
 
-ms.assetid: 303649a5-4be5-4933-bf1d-4b232083c354
+services: hdinsight
+author: hrasheed-msft
+ms.author: hrasheed
+ms.reviewer: jasonh
 ms.service: hdinsight
 ms.custom: hdinsightactive,hdiseo17may2017
-ms.workload: big-data
-ms.tgt_pltfrm: na
-ms.devlang: na
-ms.topic: article
-ms.date: 10/12/2017
-ms.author: larryfr
-
+ms.topic: conceptual
+ms.date: 03/26/2018
 ---
-# Use Apache Sqoop to import and export data between Hadoop on HDInsight and SQL Database
+# Use Apache Sqoop to import and export data between Apache Hadoop on HDInsight and SQL Database
 
 [!INCLUDE [sqoop-selector](../../../includes/hdinsight-selector-use-sqoop.md)]
 
-Learn how to use Apache Sqoop to import and export between a Hadoop cluster in Azure HDInsight and Azure SQL Database or Microsoft SQL Server database. The steps in this document use the `sqoop` command directly from the headnode of the Hadoop cluster. You use SSH to connect to the head node and run the commands in this document.
+Learn how to use Apache Sqoop to import and export between an Apache Hadoop cluster in Azure HDInsight and Azure SQL Database or Microsoft SQL Server database. The steps in this document use the `sqoop` command directly from the headnode of the Hadoop cluster. You use SSH to connect to the head node and run the commands in this document.
 
 > [!IMPORTANT]
 > The steps in this document only work with HDInsight clusters that use Linux. Linux is the only operating system used on HDInsight version 3.4 or greater. For more information, see [HDInsight retirement on Windows](../hdinsight-component-versioning.md#hdinsight-windows-retirement).
@@ -36,7 +28,7 @@ Learn how to use Apache Sqoop to import and export between a Hadoop cluster in A
 >
 > * [SQL Server Management Studio](../../sql-database/sql-database-connect-query-ssms.md)
 > * [Visual Studio Code](../../sql-database/sql-database-connect-query-vscode.md)
-> * The [sqlcmd](https://docs.microsoft.com/sql/tools/sqlcmd-utility) utility.
+> * The [sqlcmd](https://docs.microsoft.com/sql/tools/sqlcmd-utility) utility
 
 ## Create the table in SQL Database
 
@@ -68,7 +60,7 @@ GO
 1. Use SSH to connect to the HDInsight cluster. For example, the following command connects to the primary headnode of a cluster named `mycluster`:
 
     ```bash
-    ssh CLUSTERNAME-ssh.azurehdinsight.net
+    ssh mycluster-ssh.azurehdinsight.net
     ```
 
     For more information, see [Use SSH with HDInsight](../hdinsight-hadoop-linux-use-ssh-unix.md).
@@ -92,7 +84,7 @@ GO
 
     ```sql
     SET ROWCOUNT 50;
-    SELECT * FROM mobiledata;"
+    SELECT * FROM mobiledata;
     ```
 
     This command lists 50 rows that were imported into the table.
@@ -102,7 +94,7 @@ GO
 1. Use the following command to import data from the **mobiledata** table in SQL Database, to the **wasb:///tutorials/usesqoop/importeddata** directory on HDInsight:
 
     ```bash
-    sqoop import --connect 'jdbc:sqlserver://<serverName>.database.windows.net:1433;database=sqooptest' --username <adminLogin> --password <adminPassword> --table 'mobiledata' --target-dir 'wasb:///tutorials/usesqoop/importeddata' --fields-terminated-by '\t' --lines-terminated-by '\n' -m 1
+    sqoop import --connect 'jdbc:sqlserver://<serverName>.database.windows.net:1433;database=sqooptest' --username <adminLogin> -P --table 'mobiledata' --target-dir 'wasb:///tutorials/usesqoop/importeddata' --fields-terminated-by '\t' --lines-terminated-by '\n' -m 1
     ```
 
     The fields in the data are separated by a tab character, and the lines are terminated by a new-line character.
@@ -128,7 +120,7 @@ You can also use Sqoop to import and export data from SQL Server. The difference
 
 * SQL Server must be configured to allow SQL authentication. For more information, see the [Choose an Authentication Mode](https://msdn.microsoft.com/ms144284.aspx) document.
 
-* You may have to configure SQL Server to accept remote connections. For more information, see the [How to troubleshoot connecting to the SQL Server database engine](http://social.technet.microsoft.com/wiki/contents/articles/2102.how-to-troubleshoot-connecting-to-the-sql-server-database-engine.aspx) document.
+* You may have to configure SQL Server to accept remote connections. For more information, see the [How to troubleshoot connecting to the SQL Server database engine](https://social.technet.microsoft.com/wiki/contents/articles/2102.how-to-troubleshoot-connecting-to-the-sql-server-database-engine.aspx) document.
 
 * Use the following Transact-SQL statements to create the **mobiledata** table:
 
@@ -150,7 +142,7 @@ You can also use Sqoop to import and export data from SQL Server. The difference
 * When connecting to the SQL Server from HDInsight, you may have to use the IP address of the SQL Server. For example:
 
     ```bash
-    sqoop import --connect 'jdbc:sqlserver://10.0.1.1:1433;database=sqooptest' --username <adminLogin> -P <adminPassword> -table 'mobiledata' --target-dir 'wasb:///tutorials/usesqoop/importeddata' --fields-terminated-by '\t' --lines-terminated-by '\n' -m 1
+    sqoop import --connect 'jdbc:sqlserver://10.0.1.1:1433;database=sqooptest' --username <adminLogin> -P -table 'mobiledata' --target-dir 'wasb:///tutorials/usesqoop/importeddata' --fields-terminated-by '\t' --lines-terminated-by '\n' -m 1
     ```
 
 ## Limitations
@@ -173,10 +165,9 @@ Now you have learned how to use Sqoop. To learn more, see:
 [hdinsight-storage]: ../hdinsight-hadoop-use-blob-storage.md
 [hdinsight-submit-jobs]:submit-apache-hadoop-jobs-programmatically.md
 [sqldatabase-get-started]: ../sql-database-get-started.md
-[sqldatabase-create-configue]: ../sql-database-create-configure.md
 
-[powershell-start]: http://technet.microsoft.com/library/hh847889.aspx
+[powershell-start]: https://technet.microsoft.com/library/hh847889.aspx
 [powershell-install]: /powershell/azureps-cmdlets-docs
-[powershell-script]: http://technet.microsoft.com/library/ee176949.aspx
+[powershell-script]: https://technet.microsoft.com/library/ee176949.aspx
 
 [sqoop-user-guide-1.4.4]: https://sqoop.apache.org/docs/1.4.4/SqoopUserGuide.html

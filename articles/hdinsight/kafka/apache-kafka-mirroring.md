@@ -1,23 +1,16 @@
 ---
-title: Mirror Apache Kafka topics - Azure HDInsight | Microsoft Docs
+title: Mirror Apache Kafka topics - Azure HDInsight 
 description: Learn how to use Apache Kafka's mirroring feature to maintain a replica of a Kafka on HDInsight cluster by mirroring topics to a secondary cluster.
 services: hdinsight
-documentationcenter: ''
-author: Blackmist
-manager: jhubbard
-editor: cgronlun
-
-ms.assetid: 015d276e-f678-4f2b-9572-75553c56625b
+author: hrasheed-msft
+ms.author: hrasheed
+ms.reviewer: jasonh
 ms.service: hdinsight
 ms.custom: hdinsightactive
-ms.devlang: na
-ms.topic: article
-ms.tgt_pltfrm: na
-ms.workload: big-data
-ms.date: 09/07/2017
-ms.author: larryfr
+ms.topic: conceptual
+ms.date: 05/01/2018
 ---
-# Use MirrorMaker to replicate Apache Kafka topics with Kafka on HDInsight (preview)
+# Use MirrorMaker to replicate Apache Kafka topics with Kafka on HDInsight
 
 Learn how to use Apache Kafka's mirroring feature to replicate topics to a secondary cluster. Mirroring can be ran as a continuous process, or used intermittently as a method of migrating data from one cluster to another.
 
@@ -26,11 +19,11 @@ In this example, mirroring is used to replicate topics between two HDInsight clu
 > [!WARNING]
 > Mirroring should not be considered as a means to achieve fault-tolerance. The offset to items within a topic are different between the source and destination clusters, so clients cannot use the two interchangeably.
 >
-> If you are concerned about fault tolerance, you should set replication for the topics within your cluster. For more information, see [Get started with Kafka on HDInsight](apache-kafka-get-started.md).
+> If you are concerned about fault tolerance, you should set replication for the topics within your cluster. For more information, see [Get started with Apache Kafka on HDInsight](apache-kafka-get-started.md).
 
-## How Kafka mirroring works
+## How Apache Kafka mirroring works
 
-Mirroring works by using the MirrorMaker tool (part of Apache Kafka) to consume records from topics on the source cluster and then create a local copy on the destination cluster. MirrorMaker uses one (or more) *consumers* that read from the source cluster, and a *producer* that writes to the local (destination) cluster.
+Mirroring works by using the [MirrorMaker](https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=27846330) tool (part of Apache Kafka) to consume records from topics on the source cluster and then create a local copy on the destination cluster. MirrorMaker uses one (or more) *consumers* that read from the source cluster, and a *producer* that writes to the local (destination) cluster.
 
 The following diagram illustrates the Mirroring process:
 
@@ -57,7 +50,7 @@ If you need to mirror between Kafka clusters in different networks, there are th
 
 For more information on connecting two Azure Virtual Networks, see [Configure a VNet-to-VNet connection](../../vpn-gateway/vpn-gateway-vnet-vnet-rm-ps.md).
 
-## Create Kafka clusters
+## Create Apache Kafka clusters
 
 While you can create an Azure virtual network and Kafka clusters manually, it's easier to use an Azure Resource Manager template. Use the following steps to deploy an Azure virtual network and two Kafka clusters to your Azure subscription.
 
@@ -107,7 +100,7 @@ While you can create an Azure virtual network and Kafka clusters manually, it's 
 
     For information, see [Use SSH with HDInsight](../hdinsight-hadoop-linux-use-ssh-unix.md).
 
-2. Use the following commands to find the Zookeeper hosts for the source cluster:
+2. Use the following commands to find the Apache Zookeeper hosts for the source cluster:
 
     ```bash
     # Install jq if it is not installed
@@ -206,6 +199,41 @@ While you can create an Azure virtual network and Kafka clusters manually, it's 
 
     For more information producer configuration, see [Producer Configs](https://kafka.apache.org/documentation#producerconfigs) at kafka.apache.org.
 
+5. Use the following commands to find the Zookeeper hosts for the destination cluster:
+
+    ```bash
+    # Install jq if it is not installed
+    sudo apt -y install jq
+    # get the zookeeper hosts for the source cluster
+    export DEST_ZKHOSTS=`curl -sS -u admin -G https://$CLUSTERNAME.azurehdinsight.net/api/v1/clusters/$CLUSTERNAME/services/ZOOKEEPER/components/ZOOKEEPER_SERVER | jq -r '["\(.host_components[].HostRoles.host_name):2181"] | join(",")' | cut -d',' -f1,2`
+    ```
+
+    Replace `$CLUSTERNAME` with the name of the destination cluster. When prompted, enter the password for the cluster login (admin) account.
+
+7. The default configuration for Kafka on HDInsight does not allow the automatic creation of topics. You must use one of the following options before starting the Mirroring process:
+
+    * **Create the topics on the destination cluster**: This option also allows you to set the number of partitions and the replication factor.
+
+        You can create topics ahead of time by using the following command:
+
+        ```bash
+        /usr/hdp/current/kafka-broker/bin/kafka-topics.sh --create --replication-factor 2 --partitions 8 --topic testtopic --zookeeper $DEST_ZKHOSTS
+        ```
+
+        Replace `testtopic` with the name of the topic to create.
+
+    * **Configure the cluster for automatic topic creation**: This option allows MirrorMaker to automatically create topics, however it may create them with a different number of partitions or replication factor than the source topic.
+
+        To configure the destination cluster to automatically create topics, perform these steps:
+
+        1. From the [Azure portal](https://portal.azure.com), select the destination Kafka cluster.
+        2. From the cluster overview, select __Cluster dashboard__. Then select __HDInsight cluster dashboard__. When prompted, authenticate using the login (admin) credentials for the cluster.
+        3. Select the __Kafka__ service from the list on the left of the page.
+        4. Select __Configs__ in the middle of the page.
+        5. In the __Filter__ field, enter a value of `auto.create`. This filters the list of properties and displays the `auto.create.topics.enable` setting.
+        6. Change the value of `auto.create.topics.enable` to true, and then select __Save__. Add a note, and then select __Save__ again.
+        7. Select the __Kafka__ service, select __Restart__, and then select __Restart all affected__. When prompted, select __Confirm restart all__.
+
 ## Start MirrorMaker
 
 1. From the SSH connection to the **destination** cluster, use the following command to start the MirrorMaker process:
@@ -243,11 +271,9 @@ While you can create an Azure virtual network and Kafka clusters manually, it's 
 
      When you arrive at a blank line with a cursor, type in a few text messages. The messages are sent to the topic on the **source** cluster. When done, use **Ctrl + C** to end the producer process.
 
-3. From the SSH connection to the **destination** cluster, use **Ctrl + C** to end the MirrorMaker process. To verify that the topic and messages were replicated to the destination, use the following commands:
+3. From the SSH connection to the **destination** cluster, use **Ctrl + C** to end the MirrorMaker process. It may take several seconds to end the process. To verify that the messages were replicated to the destination, use the following command:
 
     ```bash
-    DEST_ZKHOSTS=`curl -sS -u admin -G https://$CLUSTERNAME.azurehdinsight.net/api/v1/clusters/$CLUSTERNAME/services/ZOOKEEPER/components/ZOOKEEPER_SERVER | jq -r '["\(.host_components[].HostRoles.host_name):2181"] | join(",")' | cut -d',' -f1,2`
-    /usr/hdp/current/kafka-broker/bin/kafka-topics.sh --list --zookeeper $DEST_ZKHOSTS
     /usr/hdp/current/kafka-broker/bin/kafka-console-consumer.sh --zookeeper $DEST_ZKHOSTS --topic testtopic --from-beginning
     ```
 
@@ -263,10 +289,10 @@ Since the steps in this document create both clusters in the same Azure resource
 
 ## Next Steps
 
-In this document, you learned how to use MirrorMaker to create a replica of a Kafka cluster. Use the following links to discover other ways to work with Kafka:
+In this document, you learned how to use [MirrorMaker](https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=27846330) to create a replica of an [Apache Kafka](https://kafka.apache.org/) cluster. Use the following links to discover other ways to work with Kafka:
 
 * [Apache Kafka MirrorMaker documentation](https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=27846330) at cwiki.apache.org.
 * [Get started with Apache Kafka on HDInsight](apache-kafka-get-started.md)
-* [Use Apache Spark with Kafka on HDInsight](../hdinsight-apache-spark-with-kafka.md)
-* [Use Apache Storm with Kafka on HDInsight](../hdinsight-apache-storm-with-kafka.md)
-* [Connect to Kafka through an Azure Virtual Network](apache-kafka-connect-vpn-gateway.md)
+* [Use Apache Spark with Apache Kafka on HDInsight](../hdinsight-apache-spark-with-kafka.md)
+* [Use Apache Storm with Apache Kafka on HDInsight](../hdinsight-apache-storm-with-kafka.md)
+* [Connect to Apache Kafka through an Azure Virtual Network](apache-kafka-connect-vpn-gateway.md)

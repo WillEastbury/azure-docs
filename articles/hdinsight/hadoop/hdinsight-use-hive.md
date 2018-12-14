@@ -1,28 +1,19 @@
 ---
-title: What is Apache Hive and HiveQL - Azure HDInsight | Microsoft Docs
-description: Apache Hive is a data warehouse system for Hadoop. You can query data stored in Hive using HiveQL, which similar to Transact-SQL. In this document, learn how to use Hive and HiveQL with Azure HDInsight.
+title: What is Apache Hive and HiveQL - Azure HDInsight 
+description: Apache Hive is a data warehouse system for Apache Hadoop. You can query data stored in Hive using HiveQL, which similar to Transact-SQL. In this document, learn how to use Hive and HiveQL with Azure HDInsight.
 keywords: hiveql,what is hive,hadoop hiveql,how to use hive,learn hive,what is hive
 services: hdinsight
-documentationcenter: ''
-author: Blackmist
-manager: jhubbard
-editor: cgronlun
-tags: azure-portal
-
-ms.assetid: 2c10f989-7636-41bf-b7f7-c4b67ec0814f
+author: hrasheed-msft
+ms.author: hrasheed
+ms.reviewer: jasonh
 ms.service: hdinsight
 ms.custom: hdinsightactive,hdiseo17may2017
-ms.devlang: na
-ms.topic: article
-ms.tgt_pltfrm: na
-ms.workload: big-data
-ms.date: 10/23/2017
-ms.author: larryfr
-
+ms.topic: conceptual
+ms.date: 04/23/2018
 ---
 # What is Apache Hive and HiveQL on Azure HDInsight?
 
-[Apache Hive](http://hive.apache.org/) is a data warehouse system for Hadoop. Hive enables data summarization, querying, and analysis of data. Hive queries are written in HiveQL, which is a query language similar to SQL.
+[Apache Hive](https://hive.apache.org/) is a data warehouse system for Apache Hadoop. Hive enables data summarization, querying, and analysis of data. Hive queries are written in HiveQL, which is a query language similar to SQL.
 
 Hive allows you to project structure on largely unstructured data. After you define the structure, you can use HiveQL to query the data without knowledge of Java or MapReduce.
 
@@ -38,20 +29,19 @@ HDInsight provides several cluster types, which are tuned for specific workloads
 
 ## How to use Hive
 
-Use the following table to discover how to use Hive with HDInsight:
+Use the following table to discover the different ways to use Hive with HDInsight:
 
-| **Use this method** if you want... | ...an **interactive** shell | ...**batch** processing | ...with this **cluster operating system** | ...from this **client operating system** |
+| **Use this method** if you want... | ...**interactive** queries | ...**batch** processing | ...with this **cluster operating system** | ...from this **client operating system** |
 |:--- |:---:|:---:|:--- |:--- |
+| [HDInsight tools for Visual Studio Code](../hdinsight-for-vscode.md) |✔ |✔ |Linux | Linux, Unix, Mac OS X, or Windows |
+| [HDInsight tools for Visual Studio](../hadoop/apache-hadoop-use-hive-visual-studio.md) |✔ |✔ |Linux or Windows* |Windows |
 | [Hive View](../hadoop/apache-hadoop-use-hive-ambari-view.md) |✔ |✔ |Linux |Any (browser based) |
 | [Beeline client](../hadoop/apache-hadoop-use-hive-beeline.md) |✔ |✔ |Linux |Linux, Unix, Mac OS X, or Windows |
 | [REST API](../hadoop/apache-hadoop-use-hive-curl.md) |&nbsp; |✔ |Linux or Windows* |Linux, Unix, Mac OS X, or Windows |
-| [HDInsight tools for Visual Studio](../hadoop/apache-hadoop-use-hive-visual-studio.md) |&nbsp; |✔ |Linux or Windows* |Windows |
 | [Windows PowerShell](../hadoop/apache-hadoop-use-hive-powershell.md) |&nbsp; |✔ |Linux or Windows* |Windows |
 
 > [!IMPORTANT]
 > \* Linux is the only operating system used on HDInsight version 3.4 or greater. For more information, see [HDInsight retirement on Windows](../hdinsight-component-versioning.md#hdinsight-windows-retirement).
->
-> If you are using a Windows-based HDInsight cluster, you can use the [Query console](../hadoop/apache-hadoop-use-hive-query-console.md) from your browser or [Remote Desktop](../hadoop/apache-hadoop-use-hive-remote-desktop.md) to run Hive queries.
 
 ## HiveQL language reference
 
@@ -62,29 +52,36 @@ HiveQL language reference is available in the [language manual (https://cwiki.ap
 Hive understands how to work with structured and semi-structured data. For example, text files where the fields are delimited by specific characters. The following HiveQL statement creates a table over space-delimited data:
 
 ```hiveql
-CREATE EXTERNAL TABLE log4jLogs (t1 string, t2 string, t3 string, t4 string, t5 string, t6 string, t7 string)
+CREATE EXTERNAL TABLE log4jLogs (
+    t1 string,
+    t2 string,
+    t3 string,
+    t4 string,
+    t5 string,
+    t6 string,
+    t7 string)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ' '
 STORED AS TEXTFILE LOCATION '/example/data/';
 ```
 
-Hive also supports custom **serializer/deserializers (SerDe)** for complex or irregularly structured data. For more information, see the [How to use a custom JSON SerDe with HDInsight](http://blogs.msdn.com/b/bigdatasupport/archive/2014/06/18/how-to-use-a-custom-json-serde-with-microsoft-azure-hdinsight.aspx) document.
+Hive also supports custom **serializer/deserializers (SerDe)** for complex or irregularly structured data. For more information, see the [How to use a custom JSON SerDe with HDInsight](https://blogs.msdn.com/b/bigdatasupport/archive/2014/06/18/how-to-use-a-custom-json-serde-with-microsoft-azure-hdinsight.aspx) document.
 
 For more information on file formats supported by Hive, see the [Language manual (https://cwiki.apache.org/confluence/display/Hive/LanguageManual)](https://cwiki.apache.org/confluence/display/Hive/LanguageManual)
 
-## Hive internal tables vs external tables
+### Hive internal tables vs external tables
 
 There are two types of tables that you can create with Hive:
 
 * __Internal__: Data is stored in the Hive data warehouse. The data warehouse is located at `/hive/warehouse/` on the default storage for the cluster.
 
-    Use internal tables when:
+    Use internal tables when one of the following conditions apply:
 
     * Data is temporary.
     * You want Hive to manage the lifecycle of the table and data.
 
 * __External__: Data is stored outside the data warehouse. The data can be stored on any storage accessible by the cluster.
 
-    Use external tables when:
+    Use external tables when one of the following conditions apply:
 
     * The data is also used outside of Hive. For example, the data files are updated by another process (that does not lock the files.)
     * Data needs to remain in the underlying location, even after dropping the table.
@@ -99,11 +96,11 @@ Hive can also be extended through **user-defined functions (UDF)**. A UDF allows
 
 * [Use a Java user-defined function with Hive](../hadoop/apache-hadoop-hive-java-udf.md)
 
-* [Use a Python user-defined function with Hive and Pig](../hadoop/python-udf-hdinsight.md)
+* [Use a Python user-defined function with Hive](../hadoop/python-udf-hdinsight.md)
 
-* [Use a C# user-defined function with Hive and Pig](../hadoop/apache-hadoop-hive-pig-udf-dotnet-csharp.md)
+* [Use a C# user-defined function with Hive](../hadoop/apache-hadoop-hive-pig-udf-dotnet-csharp.md)
 
-* [How to add a custom Hive user-defined function to HDInsight](http://blogs.msdn.com/b/bigdatasupport/archive/2014/01/14/how-to-add-custom-hive-udfs-to-hdinsight.aspx)
+* [How to add a custom Hive user-defined function to HDInsight](https://blogs.msdn.com/b/bigdatasupport/archive/2014/01/14/how-to-add-custom-hive-udfs-to-hdinsight.aspx)
 
 * [An example Hive user-defined function to convert date/time formats to Hive timestamp](https://github.com/Azure-Samples/hdinsight-java-hive-udf)
 
@@ -115,16 +112,27 @@ Hive on HDInsight comes pre-loaded with an internal table named `hivesampletable
 
 The following HiveQL statements project columns onto the `/example/data/sample.log` file:
 
-    set hive.execution.engine=tez;
-    DROP TABLE log4jLogs;
-    CREATE EXTERNAL TABLE log4jLogs (t1 string, t2 string, t3 string, t4 string, t5 string, t6 string, t7 string)
-    ROW FORMAT DELIMITED FIELDS TERMINATED BY ' '
-    STORED AS TEXTFILE LOCATION '/example/data/';
-    SELECT t4 AS sev, COUNT(*) AS count FROM log4jLogs WHERE t4 = '[ERROR]' AND INPUT__FILE__NAME LIKE '%.log' GROUP BY t4;
+```hiveql
+set hive.execution.engine=tez;
+DROP TABLE log4jLogs;
+CREATE EXTERNAL TABLE log4jLogs (
+    t1 string,
+    t2 string,
+    t3 string,
+    t4 string,
+    t5 string,
+    t6 string,
+    t7 string)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ' '
+STORED AS TEXTFILE LOCATION '/example/data/';
+SELECT t4 AS sev, COUNT(*) AS count FROM log4jLogs 
+    WHERE t4 = '[ERROR]' AND INPUT__FILE__NAME LIKE '%.log' 
+    GROUP BY t4;
+```
 
 In the previous example, the HiveQL statements perform the following actions:
 
-* `set hive.execution.engine=tez;`: Sets the execution engine to use Tez. Using Tez instead of MapReduce can provide an increase in query performance. For more information on Tez, see the [Use Apache Tez for improved performance](#usetez) section.
+* `set hive.execution.engine=tez;`: Sets the execution engine to use Tez. Using Tez can provide an increase in query performance. For more information on Tez, see the [Use Apache Tez for improved performance](#usetez) section.
 
     > [!NOTE]
     > This statement is only required when using a Windows-based HDInsight cluster. Tez is the default execution engine for Linux-based HDInsight.
@@ -148,11 +156,21 @@ In the previous example, the HiveQL statements perform the following actions:
 
 To create an **internal** table instead of external, use the following HiveQL:
 
-    set hive.execution.engine=tez;
-    CREATE TABLE IF NOT EXISTS errorLogs (t1 string, t2 string, t3 string, t4 string, t5 string, t6 string, t7 string)
-    STORED AS ORC;
-    INSERT OVERWRITE TABLE errorLogs
-    SELECT t1, t2, t3, t4, t5, t6, t7 FROM log4jLogs WHERE t4 = '[ERROR]';
+```hiveql
+set hive.execution.engine=tez;
+CREATE TABLE IF NOT EXISTS errorLogs (
+    t1 string,
+    t2 string,
+    t3 string,
+    t4 string,
+    t5 string,
+    t6 string,
+    t7 string)
+STORED AS ORC;
+INSERT OVERWRITE TABLE errorLogs
+SELECT t1, t2, t3, t4, t5, t6, t7 
+    FROM log4jLogs WHERE t4 = '[ERROR]';
+```
 
 These statements perform the following actions:
 
@@ -169,7 +187,7 @@ These statements perform the following actions:
 
 ### <a id="usetez"></a>Apache Tez
 
-[Apache Tez](http://tez.apache.org) is a framework that allows data intensive applications, such as Hive, to run much more efficiently at scale. Tez is enabled by default for Linux-based HDInsight clusters.
+[Apache Tez](https://tez.apache.org) is a framework that allows data intensive applications, such as Hive, to run much more efficiently at scale. Tez is enabled by default for Linux-based HDInsight clusters.
 
 > [!NOTE]
 > Tez is currently off by default for Windows-based HDInsight clusters and it must be enabled. To take advantage of Tez, the following value must be set for a Hive query:
@@ -192,7 +210,15 @@ To aid in debugging jobs ran using Tez, HDInsight provides the following web UIs
 
 HDInsight provides LLAP in the Interactive Query cluster type. For more information, see the [Start with Interactive Query](../interactive-query/apache-interactive-query-get-started.md) document.
 
-## Hive jobs and SQL Server Integration Services
+## Scheduling Hive queries
+
+There are several services that can be used to run Hive queries as part of a scheduled or on-demand workflow.
+
+### Azure Data Factory
+
+Azure Data Factory allows you to use HDInsight as part of a Data Factory pipeline. For more information on using Hive from a pipeline, see the [Transform data using Hive activity in Azure Data Factory](../../data-factory/transform-data-using-hadoop-hive.md) document.
+
+### Hive jobs and SQL Server Integration Services
 
 You can use SQL Server Integration Services (SSIS) to run a Hive job. The Azure Feature Pack for SSIS provides the following components that work with Hive jobs on HDInsight.
 
@@ -200,7 +226,11 @@ You can use SQL Server Integration Services (SSIS) to run a Hive job. The Azure 
 
 * [Azure Subscription Connection Manager][connectionmanager]
 
-Learn more about the Azure Feature Pack for SSIS [here][ssispack].
+For more information, see the [Azure Feature Pack][ssispack] documentation.
+
+### Apache Oozie
+
+Apache Oozie is a workflow and coordination system that manages Hadoop jobs. For more information on using Oozie with Hive, see the [Use Oozie to define and run a workflow](../hdinsight-use-oozie-linux-mac.md) document.
 
 ## <a id="nextsteps"></a>Next steps
 
@@ -210,20 +240,18 @@ Now that you've learned what Hive is and how to use it with Hadoop in HDInsight,
 * [Use Pig with HDInsight][hdinsight-use-pig]
 * [Use MapReduce jobs with HDInsight][hdinsight-use-mapreduce]
 
-[hdinsight-sdk-documentation]: http://msdnstage.redmond.corp.microsoft.com/library/dn479185.aspx
+[azure-purchase-options]: https://azure.microsoft.com/pricing/purchase-options/
+[azure-member-offers]: https://azure.microsoft.com/pricing/member-offers/
+[azure-free-trial]: https://azure.microsoft.com/pricing/free-trial/
 
-[azure-purchase-options]: http://azure.microsoft.com/pricing/purchase-options/
-[azure-member-offers]: http://azure.microsoft.com/pricing/member-offers/
-[azure-free-trial]: http://azure.microsoft.com/pricing/free-trial/
-
-[apache-tez]: http://tez.apache.org
-[apache-hive]: http://hive.apache.org/
-[apache-log4j]: http://en.wikipedia.org/wiki/Log4j
+[apache-tez]: https://tez.apache.org
+[apache-hive]: https://hive.apache.org/
+[apache-log4j]: https://en.wikipedia.org/wiki/Log4j
 [hive-on-tez-wiki]: https://cwiki.apache.org/confluence/display/Hive/Hive+on+Tez
-[import-to-excel]: http://azure.microsoft.com/documentation/articles/hdinsight-connect-excel-power-query/
-[hivetask]: http://msdn.microsoft.com/library/mt146771(v=sql.120).aspx
-[connectionmanager]: http://msdn.microsoft.com/library/mt146773(v=sql.120).aspx
-[ssispack]: http://msdn.microsoft.com/library/mt146770(v=sql.120).aspx
+[import-to-excel]: https://azure.microsoft.com/documentation/articles/hdinsight-connect-excel-power-query/
+[hivetask]: https://msdn.microsoft.com/library/mt146771(v=sql.120).aspx
+[connectionmanager]: https://msdn.microsoft.com/library/mt146773(v=sql.120).aspx
+[ssispack]: https://msdn.microsoft.com/library/mt146770(v=sql.120).aspx
 
 [hdinsight-use-pig]: hdinsight-use-pig.md
 [hdinsight-use-oozie]: hdinsight-use-oozie.md
@@ -238,7 +266,7 @@ Now that you've learned what Hive is and how to use it with Hadoop in HDInsight,
 [hdinsight-upload-data]: ../hdinsight-upload-data.md
 
 [Powershell-install-configure]: /powershell/azureps-cmdlets-docs
-[powershell-here-strings]: http://technet.microsoft.com/library/ee692792.aspx
+[powershell-here-strings]: https://technet.microsoft.com/library/ee692792.aspx
 
 
-[cindygross-hive-tables]: http://blogs.msdn.com/b/cindygross/archive/2013/02/06/hdinsight-hive-internal-and-external-tables-intro.aspx
+[cindygross-hive-tables]: https://blogs.msdn.com/b/cindygross/archive/2013/02/06/hdinsight-hive-internal-and-external-tables-intro.aspx

@@ -1,3 +1,14 @@
+---
+ title: include file
+ description: include file
+ services: vpn-gateway
+ author: cherylmc
+ ms.service: vpn-gateway
+ ms.topic: include
+ ms.date: 03/21/2018
+ ms.author: cherylmc
+ ms.custom: include file
+---
 [!INCLUDE [P2S FAQ All](vpn-gateway-faq-p2s-all-include.md)]
 
 ### Is RADIUS authentication supported on all Azure VPN Gateway SKUs?
@@ -22,7 +33,7 @@ No. It can only be routed over a Site-to-Site connection.
  
 ### Is there a change in the number of SSTP connections supported with RADIUS authentication? What is the maximum number of SSTP and IKEv2 connections supported?
 
-There is no change in the maximum number of SSTP connections supported on a gateway with RADIUS authentication. It remains 128. The maximum number of connections supported is 128, irrespective of whether the gateway is configured for SSTP, IKEv2, or both.
+There is no change in the maximum number of SSTP connections supported on a gateway with RADIUS authentication. It remains 128 for SSTP, but depends on the gateway SKU for IKEv2. For more information on the number of connections supported, see [Gateway SKUs](../articles/vpn-gateway/vpn-gateway-about-vpngateways.md#gwsku).
  
 ### What is the difference between doing certificate authentication using a RADIUS server vs. using Azure native certificate authentication (by uploading a trusted certificate to Azure).
 
@@ -32,4 +43,4 @@ When using Azure for certificate authentication, the Azure VPN gateway performs 
 
 ### Does RADIUS authentication work with both IKEv2, and SSTP VPN?
 
-Yes, RADIUS authentication is supported for both IKEv2, and SSTP VPN.  
+Yes, RADIUS authentication is supported for both IKEv2, and SSTP VPN. 

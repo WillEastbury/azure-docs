@@ -1,34 +1,25 @@
 ---
-title: Run Apache Sqoop jobs with Azure HDInsight (Hadoop) | Microsoft Docs
+title: Run Apache Sqoop jobs with Azure HDInsight (Apache Hadoop) 
 description: Learn how to use Azure PowerShell from a workstation to run Sqoop import and export between an Hadoop cluster and an Azure SQL database.
-editor: cgronlun
-manager: jhubbard
+ms.reviewer: jasonh
 services: hdinsight
-documentationcenter: ''
-tags: azure-portal
-author: mumian
-
-ms.assetid: 2fdcc6b7-6ad5-4397-a30b-e7e389b66c7a
+author: hrasheed-msft
+ms.author: hrasheed
 ms.service: hdinsight
 ms.custom: hdinsightactive
-ms.workload: big-data
-ms.tgt_pltfrm: na
-ms.devlang: na
-ms.topic: article
-ms.date: 09/25/2017
-ms.author: jgao
-
+ms.topic: conceptual
+ms.date: 05/16/2018
 ---
 # Use Sqoop with Hadoop in HDInsight
 [!INCLUDE [sqoop-selector](../../../includes/hdinsight-selector-use-sqoop.md)]
 
-Learn how to use Sqoop in HDInsight to import and export between HDInsight cluster and Azure SQL database or SQL Server database.
+Learn how to use Apache Sqoop in HDInsight to import and export between HDInsight cluster and Azure SQL database or SQL Server database.
 
-Although Hadoop is a natural choice for processing unstructured and semistructured data, 
+Although Apache Hadoop is a natural choice for processing unstructured and semistructured data, 
 such as logs and files, there may also be a need to process structured data that is 
 stored in relational databases.
 
-[Sqoop][sqoop-user-guide-1.4.4] is a tool designed to transfer data between Hadoop 
+[Apache Sqoop][sqoop-user-guide-1.4.4] is a tool designed to transfer data between Hadoop 
 clusters and relational databases. You can use it to import data from a relational 
 database management system (RDBMS) such as SQL Server, MySQL, or Oracle into the Hadoop 
 distributed file system (HDFS), transform the data in Hadoop with MapReduce or Hive, and 
@@ -101,7 +92,7 @@ If you prefer to use Azure PowerShell to create the cluster and the SQL Database
         
         |Name|Value|
         |----|-----|
-        | Default storage account name | &lt;CluterName>store |
+        | Default storage account name | &lt;ClusterName>store |
         | Azure SQL database server name | &lt;ClusterName>dbserver |
         | Azure SQL database name | &lt;ClusterName>db |
      
@@ -113,7 +104,7 @@ If you choose to use existing Azure SQL database or Microsoft SQL Server
 * **Azure SQL database**: You must configure a firewall rule for the Azure SQL database server to allow access from your workstation. For instructions about creating an Azure SQL database and configuring the firewall, see [Get started using Azure SQL database][sqldatabase-get-started]. 
   
   > [!NOTE]
-  > By default an Azure SQL database allows connections from Azure services, such as Azure HDInsight. If this firewall setting is disabled, you need to enable it from the Azure portal. For instruction about creating an Azure SQL database and configuring firewall rules, see [Create and Configure SQL Database][sqldatabase-create-configue].
+  > By default an Azure SQL database allows connections from Azure services, such as Azure HDInsight. If this firewall setting is disabled, you need to enable it from the Azure portal. For instruction about creating an Azure SQL database and configuring firewall rules, see [Create and Configure SQL Database][sqldatabase-create-configure].
   > 
   > 
 * **SQL Server**: If your HDInsight cluster is on the same virtual network in Azure as SQL Server, you can use the steps in this article to import and export data to a SQL Server database.
@@ -123,7 +114,7 @@ If you choose to use existing Azure SQL database or Microsoft SQL Server
   > 
   > 
   
-  * To create and configure a virtual network, see [Create a virtual network using the Azure portal](../../virtual-network/virtual-networks-create-vnet-arm-pportal.md).
+  * To create and configure a virtual network, see [Create a virtual network using the Azure portal](../../virtual-network/quick-create-portal.md).
     
     * When you are using SQL Server in your datacenter, you must configure the virtual network as *site-to-site* or *point-to-site*.
       
@@ -158,9 +149,9 @@ HDInsight can run Sqoop jobs by using a variety of methods. Use the following ta
 
 | **Use this** if you want... | ...an **interactive** shell | ...**batch** processing | ...with this **cluster operating system** | ...from this **client operating system** |
 |:--- |:---:|:---:|:--- |:--- |
-| [SSH](apache-hadoop-use-sqoop-mac-linux.md) |✔ |✔ |Linux |Linux, Unix, Mac OS X, or Windows |
-| [.NET SDK for Hadoop](apache-hadoop-use-sqoop-dotnet-sdk.md) |&nbsp; |✔ |Linux or Windows |Windows (for now) |
-| [Azure PowerShell](apache-hadoop-use-sqoop-powershell.md) |&nbsp; |✔ |Linux or Windows |Windows |
+| [SSH](apache-hadoop-use-sqoop-mac-linux.md) |? |? |Linux |Linux, Unix, Mac OS X, or Windows |
+| [.NET SDK for Hadoop](apache-hadoop-use-sqoop-dotnet-sdk.md) |&nbsp; |? |Linux or Windows |Windows (for now) |
+| [Azure PowerShell](apache-hadoop-use-sqoop-powershell.md) |&nbsp; |? |Linux or Windows |Windows |
 
 ## Limitations
 * Bulk export - With Linux-based HDInsight, the Sqoop connector used to export data to Microsoft SQL Server or Azure SQL Database does not currently support bulk inserts.
@@ -226,7 +217,7 @@ The PowerShell sample performs the following steps:
    > Other than connection string information, the steps in this section should work for an Azure SQL database or for SQL Server. These steps were tested by using the following configuration:
    > 
    > * **Azure virtual network point-to-site configuration**: A virtual network connected the HDInsight cluster to a SQL Server in a private datacenter. See [Configure a Point-to-Site VPN in the Management Portal](../../vpn-gateway/vpn-gateway-point-to-site-create.md) for more information.
-   > * **Azure HDInsight 3.1**: See [Create Hadoop clusters in HDInsight using custom options](../hdinsight-hadoop-provision-linux-clusters.md) for information about creating a cluster on a virtual network.
+   > * **Azure HDInsight**: See [Create Hadoop clusters in HDInsight using custom options](../hdinsight-hadoop-provision-linux-clusters.md) for information about creating a cluster on a virtual network.
    > * **SQL Server 2014**: Configured to allow authentication and running the VPN client configuration package to connect securely to the virtual network.
    > 
    > 
@@ -313,10 +304,10 @@ $ErrorActionPreference = "Stop"
 #region - Connect to Azure subscription
 Write-Host "`nConnecting to your Azure subscription ..." -ForegroundColor Green
 try{Get-AzureRmContext}
-catch{Login-AzureRmAccount}
+catch{Connect-AzureRmAccount}
 #endregion
 
-#region - Create Azure resouce group
+#region - Create Azure resource group
 Write-Host "`nCreating an Azure resource group ..." -ForegroundColor Green
 try{
     Get-AzureRmResourceGroup -Name $resourceGroupName
@@ -647,10 +638,10 @@ Get-AzureRmHDInsightJobOutput `
 [hdinsight-submit-jobs]:submit-apache-hadoop-jobs-programmatically.md
 
 [sqldatabase-get-started]: ../../sql-database/sql-database-get-started.md
-[sqldatabase-create-configue]: ../../sql-database/sql-database-get-started.md
+[sqldatabase-create-configure]: ../../sql-database/sql-database-get-started.md
 
-[powershell-start]: http://technet.microsoft.com/library/hh847889.aspx
+[powershell-start]: https://technet.microsoft.com/library/hh847889.aspx
 [powershell-install]: /powershell/azureps-cmdlets-docs
-[powershell-script]: http://technet.microsoft.com/library/ee176949.aspx
+[powershell-script]: https://technet.microsoft.com/library/ee176949.aspx
 
 [sqoop-user-guide-1.4.4]: https://sqoop.apache.org/docs/1.4.4/SqoopUserGuide.html

@@ -1,22 +1,12 @@
 ---
-title: Troubleshoot YARN by using Azure HDInsight | Microsoft Docs
+title: Troubleshoot YARN in Azure HDInsight
 description: Get answers to common questions about working with Apache Hadoop YARN and Azure HDInsight.
-keywords: Azure HDInsight, YARN, FAQ, troubleshooting guide, common questions
-services: Azure HDInsight
-documentationcenter: na
-author: arijitt
-manager: ''
-editor: ''
-
-ms.assetid: F76786A9-99AB-4B85-9B15-CA03528FC4CD
-ms.service: multiple
-ms.workload: na
-ms.tgt_pltfrm: na
-ms.devlang: na
-ms.topic: article
-ms.date: 11/2/2017
-ms.author: arijitt
-
+services: hdinsight
+ms.service: hdinsight
+author: hrasheed-msft
+ms.author: hrasheed
+ms.topic: conceptual
+ms.date: 12/06/2018
 ---
 
 # Troubleshoot YARN by using Azure HDInsight
@@ -24,7 +14,6 @@ ms.author: arijitt
 Learn about the top issues and their resolutions when working with Apache Hadoop YARN payloads in Apache Ambari.
 
 ## How do I create a new YARN queue on a cluster?
-
 
 ### Resolution steps 
 
@@ -137,16 +126,9 @@ These changes are visible immediately on the YARN Scheduler UI.
 
 ### <a name="additional-reading-2"></a>Additional reading
 
-- [Connect to HDInsight (Hadoop) by using SSH](https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-hadoop-linux-use-ssh-unix)
+- [Connect to HDInsight (Hadoop) by using SSH](https://docs.microsoft.com/azure/hdinsight/hdinsight-hadoop-linux-use-ssh-unix)
 - [Apache Hadoop YARN concepts and applications](https://hortonworks.com/blog/apache-hadoop-yarn-concepts-and-applications/)
 
 
 ### See Also
 [Troubleshoot by Using Azure HDInsight](hdinsight-troubleshoot-guide.md)
-
-
-
-
-
-
-

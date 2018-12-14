@@ -2,20 +2,20 @@
 title: Supported file formats in Azure Data Factory | Microsoft Docs
 description: 'This topic describes the file formats and compression codes that are supported by file-based connectors in Azure Data Factory.'
 author: linda33wj
-manager: jhubbard
-editor: spelluru
+manager: craigg
+ms.reviewer: douglasl
 
 ms.service: data-factory
 ms.workload: data-services
-ms.topic: article
-ms.date: 11/02/2017
+ms.topic: conceptual
+ms.date: 12/07/2018
 ms.author: jingwang
 
 ---
 
 # Supported file formats and compression codecs in Azure Data Factory
 
-*This topic applies to the following connectors: [Amazon S3](connector-amazon-simple-storage-service.md), [Azure Blob](connector-azure-blob-storage.md), [Azure Data Lake Store](connector-azure-data-lake-store.md), [Azure File Storage](connector-azure-file-storage.md), [File System](connector-file-system.md), [FTP](connector-ftp.md), [HDFS](connector-hdfs.md), [HTTP](connector-http.md), and [SFTP](connector-sftp.md).*
+*This topic applies to the following connectors: [Amazon S3](connector-amazon-simple-storage-service.md), [Azure Blob](connector-azure-blob-storage.md), [Azure Data Lake Storage Gen1](connector-azure-data-lake-store.md), [Azure Data Lake Storage Gen2](connector-azure-data-lake-storage.md), [Azure File Storage](connector-azure-file-storage.md), [File System](connector-file-system.md), [FTP](connector-ftp.md), [HDFS](connector-hdfs.md), [HTTP](connector-http.md), and [SFTP](connector-sftp.md).*
 
 If you want to **copy files as-is** between file-based stores (binary copy), skip the format section in both input and output dataset definitions. If you want to **parse or generate files with a specific format**, Azure Data Factory supports the following file format types:
 
@@ -25,8 +25,8 @@ If you want to **copy files as-is** between file-based stores (binary copy), ski
 * [ORC format](#orc-format)
 * [Parquet format](#parquet-format)
 
-> [!NOTE]
-> This article applies to version 2 of Data Factory, which is currently in preview. If you are using version 1 of the Data Factory service, which is generally available (GA), see [supported file and compression formats in Data Factory version1](v1//data-factory-supported-file-and-compression-formats.md).
+> [!TIP]
+> Learn how copy activity maps your source data to sink from [Schema mapping in copy activity](copy-activity-schema-and-type-mapping.md), including how the metadata is determined based on your file format settings and tips on when to specify the [dataset `structure`](concepts-datasets-linked-services.md#dataset-structure) section.
 
 ## Text format
 
@@ -41,7 +41,7 @@ If you want to read from a text file or write to a text file, set the `type` pro
 | nullValue |One or more characters used to represent a null value. |One or more characters. The **default** values are **"\N" and "NULL"** on read and **"\N"** on write. |No |
 | encodingName |Specify the encoding name. |A valid encoding name. see [Encoding.EncodingName Property](https://msdn.microsoft.com/library/system.text.encoding.aspx). Example: windows-1250 or shift_jis. The **default** value is **UTF-8**. |No |
 | firstRowAsHeader |Specifies whether to consider the first row as a header. For an input dataset, Data Factory reads first row as a header. For an output dataset, Data Factory writes first row as a header. <br/><br/>See [Scenarios for using `firstRowAsHeader` and `skipLineCount`](#scenarios-for-using-firstrowasheader-and-skiplinecount) for sample scenarios. |True<br/><b>False (default)</b> |No |
-| skipLineCount |Indicates the number of rows to skip when reading data from input files. If both skipLineCount and firstRowAsHeader are specified, the lines are skipped first and then the header information is read from the input file. <br/><br/>See [Scenarios for using `firstRowAsHeader` and `skipLineCount`](#scenarios-for-using-firstrowasheader-and-skiplinecount) for sample scenarios. |Integer |No |
+| skipLineCount |Indicates the number of **non-empty** rows to skip when reading data from input files. If both skipLineCount and firstRowAsHeader are specified, the lines are skipped first and then the header information is read from the input file. <br/><br/>See [Scenarios for using `firstRowAsHeader` and `skipLineCount`](#scenarios-for-using-firstrowasheader-and-skiplinecount) for sample scenarios. |Integer |No |
 | treatEmptyAsNull |Specifies whether to treat null or empty string as a null value when reading data from an input file. |**True (default)**<br/>False |No |
 
 ### TextFormat example
@@ -207,7 +207,7 @@ In this sample, you expect one root JSON object maps to single record in tabular
                     "TargetResourceType": "Microsoft.Compute/virtualMachines"
                 },
                 {
-                    "ResourceManagmentProcessRunId": "827f8aaa-ab72-437c-ba48-d8917a7336a3"
+                    "ResourceManagementProcessRunId": "827f8aaa-ab72-437c-ba48-d8917a7336a3"
                 },
                 {
                     "OccurrenceTime": "1/13/2017 11:24:37 AM"
@@ -220,7 +220,7 @@ In this sample, you expect one root JSON object maps to single record in tabular
 
 and you want to copy it into an Azure SQL table in the following format, by extracting data from both objects and array:
 
-| ID | deviceType | targetResourceType | resourceManagmentProcessRunId | occurrenceTime |
+| ID | deviceType | targetResourceType | resourceManagementProcessRunId | occurrenceTime |
 | --- | --- | --- | --- | --- |
 | ed0e4960-d9c5-11e6-85dc-d7996816aad3 | PC | Microsoft.Compute/virtualMachines | 827f8aaa-ab72-437c-ba48-d8917a7336a3 | 1/13/2017 11:24:37 AM |
 
@@ -245,7 +245,7 @@ The input dataset with **JsonFormat** type is defined as follows: (partial defin
             "type": "String"
         },
         {
-            "name": "resourceManagmentProcessRunId",
+            "name": "resourceManagementProcessRunId",
             "type": "String"
         },
         {
@@ -258,7 +258,7 @@ The input dataset with **JsonFormat** type is defined as follows: (partial defin
         "format": {
             "type": "JsonFormat",
             "filePattern": "setOfObjects",
-            "jsonPathDefinition": {"id": "$.id", "deviceType": "$.context.device.type", "targetResourceType": "$.context.custom.dimensions[0].TargetResourceType", "resourceManagmentProcessRunId": "$.context.custom.dimensions[1].ResourceManagmentProcessRunId", "occurrenceTime": " $.context.custom.dimensions[2].OccurrenceTime"}
+            "jsonPathDefinition": {"id": "$.id", "deviceType": "$.context.device.type", "targetResourceType": "$.context.custom.dimensions[0].TargetResourceType", "resourceManagementProcessRunId": "$.context.custom.dimensions[1].ResourceManagementProcessRunId", "occurrenceTime": " $.context.custom.dimensions[2].OccurrenceTime"}
         }
     }
 }
@@ -431,13 +431,37 @@ If you want to parse the ORC files or write the data in ORC format, set the `for
 ```
 
 > [!IMPORTANT]
-> If you are not copying ORC files **as-is** between on-premises and cloud data stores, you need to install the JRE 8 (Java Runtime Environment) on your gateway machine. A 64-bit gateway requires 64-bit JRE and 32-bit gateway requires 32-bit JRE. You can find both versions from [here](http://go.microsoft.com/fwlink/?LinkId=808605). Choose the appropriate one.
+> For copy empowered by Self-hosted Integration Runtime e.g. between on-premises and cloud data stores, if you are not copying ORC files **as-is**, you need to install the JRE 8 (Java Runtime Environment) on your IR machine. A 64-bit IR requires 64-bit JRE. You can find both versions from [here](https://go.microsoft.com/fwlink/?LinkId=808605).
 >
 
 Note the following points:
 
 * Complex data types are not supported (STRUCT, MAP, LIST, UNION)
 * ORC file has three [compression-related options](http://hortonworks.com/blog/orcfile-in-hdp-2-better-compression-better-performance/): NONE, ZLIB, SNAPPY. Data Factory supports reading data from ORC file in any of these compressed formats. It uses the compression codec is in the metadata to read the data. However, when writing to an ORC file, Data Factory chooses ZLIB, which is the default for ORC. Currently, there is no option to override this behavior.
+
+### Data type mapping for ORC files
+
+| Data factory interim data type | ORC types |
+|:--- |:--- |
+| Boolean | Boolean |
+| SByte | Byte |
+| Byte | Short |
+| Int16 | Short |
+| UInt16 | Int |
+| Int32 | Int |
+| UInt32 | Long |
+| Int64 | Long |
+| UInt64 | String |
+| Single | Float |
+| Double | Double |
+| Decimal | Decimal |
+| String | String |
+| DateTime | Timestamp |
+| DateTimeOffset | Timestamp |
+| TimeSpan | Timestamp |
+| ByteArray | Binary |
+| Guid | String |
+| Char | Char(1) |
 
 ## Parquet format
 
@@ -451,13 +475,38 @@ If you want to parse the Parquet files or write the data in Parquet format, set 
 ```
 
 > [!IMPORTANT]
-> If you are not copying Parquet files **as-is** between on-premises and cloud data stores, you need to install the JRE 8 (Java Runtime Environment) on your gateway machine. A 64-bit gateway requires 64-bit JRE and 32-bit gateway requires 32-bit JRE. You can find both versions from [here](http://go.microsoft.com/fwlink/?LinkId=808605). Choose the appropriate one.
+> For copy empowered by Self-hosted Integration Runtime e.g. between on-premises and cloud data stores, if you are not copying Parquet files **as-is**, you need to install the JRE 8 (Java Runtime Environment) on your IR machine. A 64-bit IR requires 64-bit JRE. You can find both versions from [here](https://go.microsoft.com/fwlink/?LinkId=808605).
 >
 
 Note the following points:
 
 * Complex data types are not supported (MAP, LIST)
-* Parquet file has the following compression-related options: NONE, SNAPPY, GZIP, and LZO. Data Factory supports reading data from ORC file in any of these compressed formats. It uses the compression codec in the metadata to read the data. However, when writing to a Parquet file, Data Factory chooses SNAPPY, which is the default for Parquet format. Currently, there is no option to override this behavior.
+* Parquet file has the following compression-related options: NONE, SNAPPY, GZIP, and LZO. Data Factory supports reading data from Parquet file in any of these compressed formats. It uses the compression codec in the metadata to read the data. However, when writing to a Parquet file, Data Factory chooses SNAPPY, which is the default for Parquet format. Currently, there is no option to override this behavior.
+
+### Data type mapping for Parquet files
+
+| Data factory interim data type | Parquet Primitive Type | Parquet Original Type (Deserialize) | Parquet Original Type (Serialize) |
+|:--- |:--- |:--- |:--- |
+| Boolean | Boolean | N/A | N/A |
+| SByte | Int32 | Int8 | Int8 |
+| Byte | Int32 | UInt8 | Int16 |
+| Int16 | Int32 | Int16 | Int16 |
+| UInt16 | Int32 | UInt16 | Int32 |
+| Int32 | Int32 | Int32 | Int32 |
+| UInt32 | Int64 | UInt32 | Int64 |
+| Int64 | Int64 | Int64 | Int64 |
+| UInt64 | Int64/Binary | UInt64 | Decimal |
+| Single | Float | N/A | N/A |
+| Double | Double | N/A | N/A |
+| Decimal | Binary | Decimal | Decimal |
+| String | Binary | Utf8 | Utf8 |
+| DateTime | Int96 | N/A | N/A |
+| TimeSpan | Int96 | N/A | N/A |
+| DateTimeOffset | Int96 | N/A | N/A |
+| ByteArray | Binary | N/A | N/A |
+| Guid | Binary | Utf8 | Utf8 |
+| Char | Binary | Utf8 | Utf8 |
+| CharArray | Not supported | N/A | N/A |
 
 ## Compression support
 

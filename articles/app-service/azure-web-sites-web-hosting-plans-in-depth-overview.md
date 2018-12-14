@@ -1,5 +1,5 @@
 ---
-title: Azure App Service plan overview | Microsoft Docs
+title: App Service plan overview - Azure | Microsoft Docs
 description: Learn how App Service plans for Azure App Service work, and how they benefit your management experience.
 keywords: app service, azure app service, scale, scalable, scalability, app service plan, app service cost
 services: app-service
@@ -16,11 +16,12 @@ ms.devlang: na
 ms.topic: article
 ms.date: 11/09/2017
 ms.author: cephalin
+ms.custom: seodec18
 
 ---
 # Azure App Service plan overview
 
-In App Service, an app runs in an _App Service plan_. An App Service plan defines a set of compute resources for a web app to run. These compute resources are analogous to the [_server farm_](https://wikipedia.org/wiki/Server_farm) in conventional web hosting. One or more apps can be configured to run on the same computing resources (or in the same App Service plan). 
+In App Service, an app runs in an _App Service plan_. An App Service plan defines a set of compute resources for a web app to run. These compute resources are analogous to the [_server farm_](https://wikipedia.org/wiki/Server_farm) in conventional web hosting. One or more apps can be configured to run on the same computing resources (or in the same App Service plan).
 
 When you create an App Service plan in a certain region (for example, West Europe), a set of compute resources is created for that plan in that region. Whatever apps you put into this App Service plan run on these compute resources as defined by your App Service plan. Each App Service plan defines:
 
@@ -36,6 +37,8 @@ The _pricing tier_ of an App Service plan determines what App Service features y
 - **Isolated**: This tier runs dedicated Azure VMs on dedicated Azure Virtual Networks, which provides network isolation on top of compute isolation to your apps. It provides the maximum scale-out capabilities.
 - **Consumption**: This tier is only available to [function apps](../azure-functions/functions-overview.md). It scales the functions dynamically depending on workload. For more information, see [Azure Functions hosting plans comparison](../azure-functions/functions-scale.md).
 
+[!INCLUDE [app-service-dev-test-note](../../includes/app-service-dev-test-note.md)]
+
 Each tier also provides a specific subset of App Service features. These features include custom domains and SSL certificates, autoscaling, deployment slots, backups, Traffic Manager integration, and more. The higher the tier, the more features are available. To find out which features are supported in each pricing tier, see [App Service plan details](https://azure.microsoft.com/pricing/details/app-service/plans/).
 
 <a name="new-pricing-tier-premiumv2"></a>
@@ -49,7 +52,7 @@ Each tier also provides a specific subset of App Service features. These feature
 > - Medium (two CPU cores, 7 GiB of memory) 
 > - Large (four CPU cores, 14 GiB of memory)  
 >
-> For **PremiumV2** pricing information, see [App Service Pricing](/pricing/details/app-service/).
+> For **PremiumV2** pricing information, see [App Service Pricing](https://azure.microsoft.com/pricing/details/app-service/).
 >
 > To get started with the new **PremiumV2** pricing tier, see [Configure PremiumV2 tier for App Service](app-service-configure-premium-tier.md).
 
@@ -114,4 +117,4 @@ This way you can allocate a new set of resources for your app and gain greater c
 ## Manage an App Service plan
 
 > [!div class="nextstepaction"]
-> [Scale up an app in Azure](app-service-plan-manage.md)
+> [Manage an App Service plan](app-service-plan-manage.md)

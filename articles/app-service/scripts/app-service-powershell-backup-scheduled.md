@@ -1,10 +1,10 @@
----
+﻿---
 title: Azure PowerShell Script Sample - Create a scheduled backup for a web app | Microsoft Docs
 description: Azure PowerShell Script Sample - Create a scheduled backup for a web app
 services: app-service\web
 documentationcenter: 
-author: cephalin
-manager: cfowler
+author: msangapu
+manager: jeconnoc
 editor: 
 tags: azure-service-management
 
@@ -14,19 +14,20 @@ ms.workload: web
 ms.devlang: na
 ms.topic: sample
 ms.date: 10/30/2017
-ms.author: cephalin
+ms.author: msangapu
 ms.custom: mvc
+ms.custom: seodec18
 ---
 
-# Create a scheduled backup for a web app
+# Create a scheduled backup for a web app using PowerShell
 
-This sample script creates a web app in App Service with its related resources, and then creates a one-time backup for it. 
+This sample script creates a web app in App Service with its related resources, and then creates a scheduled backup for it. 
 
-If needed, install the Azure PowerShell using the instruction found in the [Azure PowerShell guide](/powershell/azure/overview), and then run `Login-AzureRmAccount` to create a connection with Azure. 
+If needed, install the Azure PowerShell using the instruction found in the [Azure PowerShell guide](/powershell/azure/overview), and then run `Connect-AzureRmAccount` to create a connection with Azure. 
 
 ## Sample script
 
-[!code-powershell[main](../../../powershell_scripts/app-service/backup-scheduled/backup-scheduled.ps1?highlight=1-4 "Create a scheduled backup for a web app")]
+[!code-azurepowershell-interactive[main](../../../powershell_scripts/app-service/backup-scheduled/backup-scheduled.ps1?highlight=1-4 "Create a scheduled backup for a web app")]
 
 ## Clean up deployment 
 
@@ -45,7 +46,7 @@ This script uses the following commands. Each command in the table links to comm
 | [New-AzureRmResourceGroup](/powershell/module/azurerm.resources/new-azurermresourcegroup) | Creates a resource group in which all resources are stored. |
 | [New-AzureRmStorageAccount](/powershell/module/azurerm.storage/new-azurermstorageaccount) | Creates a Storage account. |
 | [New-AzureStorageContainer](/powershell/module/azure.storage/new-azurestoragecontainer) | Creates an Azure storage container. |
-| [New-AzureStorageContainerSASToken](/powershell/module/azurerm.resources/new-azurermresourcegroup) | Creates a resource group in which all resources are stored. |
+| [New-AzureStorageContainerSASToken](/powershell/module/azure.storage/new-azurestoragecontainersastoken) | Generates an SAS token for an Azure storage container. |
 | [New-AzureRmAppServicePlan](/powershell/module/azurerm.websites/new-azurermappserviceplan) | Creates an App Service plan. |
 | [New-AzureRmWebApp](/powershell/module/azurerm.websites/new-azurermwebapp) | Creates a web app. |
 | [Edit-AzureRmWebAppBackupConfiguration](/powershell/module/azurerm.websites/edit-azurermwebappbackupconfiguration) | Edits the backup configuration for web app. |

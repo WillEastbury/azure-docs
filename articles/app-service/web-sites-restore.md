@@ -1,5 +1,5 @@
 ---
-title: Restore an app in Azure
+title: Restore app - Azure App Service
 description: Learn how to restore your app from a backup.
 services: app-service
 documentationcenter: ''
@@ -15,6 +15,7 @@ ms.devlang: na
 ms.topic: article
 ms.date: 07/06/2016
 ms.author: cephalin
+ms.custom: seodec18
 
 ---
 # Restore an app in Azure
@@ -22,10 +23,9 @@ This article shows you how to restore an app in [Azure App Service](../app-servi
 that you have previously backed up (see [Back up your app in Azure](web-sites-backup.md)). You can restore your app
 with its linked databases on-demand to a previous state, or create a new app based on one of
 your original app's backups. Azure App Service supports the following databases for backup and restore:
-- [SQL Database](https://azure.microsoft.com/en-us/services/sql-database/)
-- [Azure Database for MySQL (Preview)](https://azure.microsoft.com/en-us/services/mysql)
-- [Azure Database for PostgreSQL (Preview)](https://azure.microsoft.com/en-us/services/postgres)
-- [ClearDB MySQL](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/SuccessBricksInc.ClearDBMySQLDatabase?tab=Overview)
+- [SQL Database](https://azure.microsoft.com/services/sql-database/)
+- [Azure Database for MySQL](https://azure.microsoft.com/services/mysql)
+- [Azure Database for PostgreSQL](https://azure.microsoft.com/services/postgresql)
 - [MySQL in-app](https://blogs.msdn.microsoft.com/appserviceteam/2017/03/06/announcing-general-availability-for-mysql-in-app)
 
 Restoring from backups is available to apps running in **Standard** and **Premium** tier. For information about scaling
@@ -55,7 +55,12 @@ backups to be performed than **Standard** tier.
    > 
    > 
    
-    You can select **Existing App** to restore the app backup to another app in the same resoure group. Before you use this option, you should have already created another app in your resource group with mirroring database configuration to the one defined in the app backup. You can also Create a **New** app to restore your content to.
+   > [!WARNING]
+   > If the App Service is writing data to the database while you are restoring it, it may result in symptoms such as violation of PRIMARY KEY and data loss. It is suggested to stop the App Service first before you start to restore the database.
+   > 
+   > 
+   
+    You can select **Existing App** to restore the app backup to another app in the same resource group. Before you use this option, you should have already created another app in your resource group with mirroring database configuration to the one defined in the app backup. You can also Create a **New** app to restore your content to.
 
 4. Click **OK**.
 

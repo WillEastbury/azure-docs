@@ -1,22 +1,15 @@
 ---
-title: Generate recommendations using Mahout HDInsight from PowerShell - Azure | Microsoft Docs
+title: Generate recommendations using Mahout HDInsight from PowerShell - Azure 
 description: Learn how to use the Apache Mahout machine learning library to generate movie recommendations with HDInsight (Hadoop) from a PowerShell script running on your client.
 services: hdinsight
-documentationcenter: ''
-author: Blackmist
-manager: jhubbard
-editor: cgronlun
-tags: azure-portal
+author: hrasheed-msft
+ms.reviewer: jasonh
 
-ms.assetid: 07b57208-32aa-4e59-900a-6c934fa1b7a7
 ms.service: hdinsight
 ms.custom: hdinsightactive
-ms.workload: big-data
-ms.tgt_pltfrm: na
-ms.devlang: na
-ms.topic: article
-ms.date: 11/03/2017
-ms.author: larryfr
+ms.topic: conceptual
+ms.date: 04/23/2018
+ms.author: hrasheed
 
 ---
 # Generate movie recommendations by using Apache Mahout with Hadoop in HDInsight (PowerShell)
@@ -147,7 +140,7 @@ To avoid errors when running Mahout jobs, delete temporary and output files betw
 $sub = Get-AzureRmSubscription -ErrorAction SilentlyContinue
 if(-not($sub))
 {
-    Add-AzureRmAccount
+    Connect-AzureRmAccount
 }
 
 # Get cluster info
@@ -221,8 +214,8 @@ Now that you have learned how to use Mahout, discover other ways of working with
 [100k]: http://files.grouplens.org/datasets/movielens/ml-100k.zip
 [getstarted]:hadoop/apache-hadoop-linux-tutorial-get-started.md
 [upload]: hdinsight-upload-data.md
-[ml]: http://en.wikipedia.org/wiki/Machine_learning
-[forest]: http://en.wikipedia.org/wiki/Random_forest
+[ml]: https://en.wikipedia.org/wiki/Machine_learning
+[forest]: https://en.wikipedia.org/wiki/Random_forest
 [enableremote]: ./media/hdinsight-mahout/enableremote.png
 [connect]: ./media/hdinsight-mahout/connect.png
 [hadoopcli]: ./media/hdinsight-mahout/hadoopcli.png

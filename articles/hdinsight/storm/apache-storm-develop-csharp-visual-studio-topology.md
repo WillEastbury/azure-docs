@@ -1,27 +1,18 @@
 ---
-title: Apache Storm topologies with Visual Studio and C# - Azure HDInsight | Microsoft Docs
+title: Apache Storm topologies with Visual Studio and C# - Azure HDInsight 
 description: Learn how to create Storm topologies in C#. Create a simple word count topology in Visual Studio by using the Hadoop tools for Visual Studio.
 services: hdinsight
-documentationcenter: ''
-author: Blackmist
-manager: jhubbard
-editor: cgronlun
-tags: azure-portal
-
-ms.assetid: 380d804f-a8c5-4b20-9762-593ec4da5a0d
 ms.service: hdinsight
-ms.custom: hdinsightactive
-ms.devlang: java
-ms.topic: article
-ms.tgt_pltfrm: na
-ms.workload: big-data
-ms.date: 08/02/2017
-ms.author: larryfr
-
+author: hrasheed-msft
+ms.author: hrasheed
+ms.reviewer: jasonh
+ms.topic: conceptual
+ms.date: 11/27/2017
+ROBOTS: NOINDEX
 ---
 # Develop C# topologies for Apache Storm by using the Data Lake tools for Visual Studio
 
-Learn how to create a C# Storm topology by using the Azure Data Lake (Hadoop) tools for Visual Studio. This document walks through the process of creating a Storm project in Visual Studio, testing it locally, and deploying it to an Apache Storm on Azure HDInsight cluster.
+Learn how to create a C# Apache Storm topology by using the Azure Data Lake (Apache Hadoop) tools for Visual Studio. This document walks through the process of creating a Storm project in Visual Studio, testing it locally, and deploying it to an Apache Storm on Azure HDInsight cluster.
 
 You also learn how to create hybrid topologies that use C# and Java components.
 
@@ -30,7 +21,7 @@ You also learn how to create hybrid topologies that use C# and Java components.
 
 To use a C# topology with a Linux-based cluster, you must update the Microsoft.SCP.Net.SDK NuGet package used by your project to version 0.10.0.6 or later. The version of the package must also match the major version of Storm installed on HDInsight.
 
-| HDInsight version | Storm version | SCP.NET version | Default Mono version |
+| HDInsight version | Apache Storm version | SCP.NET version | Default Mono version |
 |:-----------------:|:-------------:|:---------------:|:--------------------:|
 | 3.3 |0.10.x |0.10.x.x</br>(only on Windows-based HDInsight) | NA |
 | 3.4 | 0.10.0.x | 0.10.0.x | 3.2.8 |
@@ -44,9 +35,9 @@ To use a C# topology with a Linux-based cluster, you must update the Microsoft.S
 
 You can develop C# topologies with SCP.NET by using one of the following versions of Visual Studio:
 
-* Visual Studio 2012 with [Update 4](http://www.microsoft.com/download/details.aspx?id=39305)
+* Visual Studio 2012 with Update 4
 
-* Visual Studio 2013 with [Update 4](http://www.microsoft.com/download/details.aspx?id=44921) or [Visual Studio 2013 Community](http://go.microsoft.com/fwlink/?LinkId=517284)
+* Visual Studio 2013 with Update 4 or [Visual Studio 2013 Community](https://go.microsoft.com/fwlink/?LinkId=517284)
 
 * Visual Studio 2015 or [Visual Studio 2015 Community](https://go.microsoft.com/fwlink/?LinkId=532606)
 
@@ -60,7 +51,7 @@ To install Data Lake tools for Visual Studio, follow the steps in [Get started u
 
 When you submit a Storm topology from Visual Studio, SCP.NET generates a zip file that contains the topology and dependencies. Java is used to create these zip files, because it uses a format that is more compatible with Linux-based clusters.
 
-1. Install the Java Developer Kit (JDK) 7 or later on your development environment. You can get the Oracle JDK from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/index.html). You can also use [other Java distributions](http://openjdk.java.net/).
+1. Install the Java Developer Kit (JDK) 7 or later on your development environment. You can get the Oracle JDK from [Oracle](https://aka.ms/azure-jdks). You can also use [other Java distributions](http://openjdk.java.net/).
 
 2. The `JAVA_HOME` environment variable must point to the directory that contains Java.
 
@@ -77,30 +68,30 @@ namespace ConsoleApplication2
    {
        static void Main(string[] args)
        {
-           string javaHome = Environment.GetEnvironmentVariable(“JAVA_HOME”);
+           string javaHome = Environment.GetEnvironmentVariable("JAVA_HOME");
            if (!string.IsNullOrEmpty(javaHome))
            {
-               string jarExe = Path.Combine(javaHome + @”\bin”, “jar.exe”);
+               string jarExe = Path.Combine(javaHome + @"\bin", "jar.exe");
                if (File.Exists(jarExe))
                {
-                   Console.WriteLine(“JAVA Is Installed properly”);
+                   Console.WriteLine("JAVA Is Installed properly");
                     return;
                }
                else
                {
-                   Console.WriteLine(“A valid JAVA JDK is not found. Looks like JRE is installed instead of JDK.”);
+                   Console.WriteLine("A valid JAVA JDK is not found. Looks like JRE is installed instead of JDK.");
                }
            }
            else
            {
-             Console.WriteLine(“A valid JAVA JDK is not found. JAVA_HOME environment variable is not set.”);
+             Console.WriteLine("A valid JAVA JDK is not found. JAVA_HOME environment variable is not set.");
            }
        }  
    }
 }
 ```
 
-## Storm templates
+## Apache Storm templates
 
 The Data Lake tools for Visual Studio provide the following templates:
 
@@ -118,11 +109,11 @@ The Data Lake tools for Visual Studio provide the following templates:
 | Storm Sample |A basic word count topology. |
 
 > [!WARNING]
-> Not all templates will work with Linux-based HDInsight. Nuget packages used by the templates may not be compatible with Mono. Check the [Mono compatibility](http://www.mono-project.com/docs/about-mono/compatibility/) document and use the [.NET Portability Analyzer](../hdinsight-hadoop-migrate-dotnet-to-linux.md#automated-portability-analysis) to identify potential problems.
+> Not all templates work with Linux-based HDInsight. NuGet packages used by the templates may not be compatible with Mono. Check the [Mono compatibility](http://www.mono-project.com/docs/about-mono/compatibility/) document and use the [.NET Portability Analyzer](../hdinsight-hadoop-migrate-dotnet-to-linux.md#automated-portability-analysis) to identify potential problems.
 
 In the steps in this document, you use the basic Storm Application project type to create a topology.
 
-### HBase templates notes
+### Apache HBase templates notes
 
 The HBase reader and writer templates use the HBase REST API, not the HBase Java API, to communicate with an HBase on HDInsight cluster.
 
@@ -163,7 +154,7 @@ For an example topology that uses this component and works with Storm on HDInsig
 
    * **Fail** (transactional topology only): Handles tuples that are fail-processing other components in the topology. Implementing a Fail method allows you to re-emit the tuple so that it can be processed again.
 
-2. Replace the contents of the **Spout** class with the following text. This spout randomly emits a sentence into the topology.
+2. Replace the contents of the **Spout** class with the following text: This spout randomly emits a sentence into the topology.
 
     ```csharp
     private Context ctx;
@@ -284,7 +275,7 @@ For an example topology that uses this component and works with Storm on HDInsig
     }
     ```
 
-5. Open **Counter.cs**, and replace the class contents with the following:
+5. Open **Counter.cs**, and replace the class contents with the following code:
 
     ```csharp
     private Context ctx;
@@ -346,7 +337,7 @@ Spouts and bolts are arranged in a graph, which defines how the data flows betwe
 
 Sentences are emitted from the spout, and are distributed to instances of the Splitter bolt. The Splitter bolt breaks the sentences into words, which are distributed to the Counter bolt.
 
-Because word count is held locally in the Counter instance, we want to make sure that specific words flow to the same Counter bolt instance. Each instance keeps track of specific words. Since the Splitter bolt maintains no state, it really doesn't matter which instance of the splitter receives which sentence.
+Because word count is held locally in the Counter instance, you want to make sure that specific words flow to the same Counter bolt instance. Each instance keeps track of specific words. Since the Splitter bolt maintains no state, it really doesn't matter which instance of the splitter receives which sentence.
 
 Open **Program.cs**. The important method is **GetTopologyBuilder**, which is used to define the topology that is submitted to Storm. Replace the contents of **GetTopologyBuilder** with the following code to implement the topology described previously:
 
@@ -466,16 +457,16 @@ For an example of a hybrid topology, create a project and select **Storm Hybrid 
   > This version also demonstrates how to use Clojure code from a text file as a Java component.
 
 
-To switch the topology that is used when the project is submitted, simply move the `[Active(true)]` statement to the topology you want to use, before submitting it to the cluster.
+To switch the topology that is used when the project is submitted, move the `[Active(true)]` statement to the topology you want to use, before submitting it to the cluster.
 
 > [!NOTE]
 > All the Java files that are required are provided as part of this project in the **JavaDependency** folder.
 
 Consider the following when you are creating and submitting a hybrid topology:
 
-* You must use **JavaComponentConstructor** to create an instance of the Java class for a spout or bolt.
+* Use **JavaComponentConstructor** to create an instance of the Java class for a spout or bolt.
 
-* You should use **microsoft.scp.storm.multilang.CustomizedInteropJSONSerializer** to serialize data into or out of Java components from Java objects to JSON.
+* Use **microsoft.scp.storm.multilang.CustomizedInteropJSONSerializer** to serialize data into or out of Java components from Java objects to JSON.
 
 * When submitting the topology to the server, you must use the **Additional configurations** option to specify the **Java File paths**. The path specified should be the directory that contains the JAR files that contain your Java classes.
 
@@ -697,7 +688,7 @@ Although it is easy to deploy a topology to a cluster, in some cases, you may ne
 
 ### Log information
 
-You can easily log information from your topology components by using `Context.Logger`. For example, the following creates an informational log entry:
+You can easily log information from your topology components by using `Context.Logger`. For example, the following command creates an informational log entry:
 
 ```csharp
 Context.Logger.Info("Component started");
@@ -757,14 +748,14 @@ For more ways to work with HDInsight and more Storm on HDInsight samples, see th
 **Apache Storm on HDInsight**
 
 * [Deploy and monitor topologies with Apache Storm on HDInsight](apache-storm-deploy-monitor-topology.md)
-* [Example topologies for Storm on HDInsight](apache-storm-example-topology.md)
+* [Example topologies for Apache Storm on HDInsight](apache-storm-example-topology.md)
 
 **Apache Hadoop on HDInsight**
 
-* [Use Hive with Hadoop on HDInsight](../hadoop/hdinsight-use-hive.md)
-* [Use Pig with Hadoop on HDInsight](../hadoop/hdinsight-use-pig.md)
-* [Use MapReduce with Hadoop on HDInsight](../hadoop/hdinsight-use-mapreduce.md)
+* [Use Apache Hive with Apache Hadoop on HDInsight](../hadoop/hdinsight-use-hive.md)
+* [Use Apache Pig with Apache Hadoop on HDInsight](../hadoop/hdinsight-use-pig.md)
+* [Use Apache Hadoop MapReduce with Apache Hadoop on HDInsight](../hadoop/hdinsight-use-mapreduce.md)
 
 **Apache HBase on HDInsight**
 
-* [Getting started with HBase on HDInsight](../hbase/apache-hbase-tutorial-get-started-linux.md)
+* [Getting started with Apache HBase on HDInsight](../hbase/apache-hbase-tutorial-get-started-linux.md)

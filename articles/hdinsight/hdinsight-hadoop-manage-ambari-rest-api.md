@@ -1,22 +1,15 @@
 ---
-title: Monitor and manage Hadoop with Ambari REST API - Azure HDInsight | Microsoft Docs
+title: Monitor and manage Hadoop with Ambari REST API - Azure HDInsight 
 description: Learn how to use Ambari to monitor and manage Hadoop clusters in Azure HDInsight. In this document, you will learn how to use the Ambari REST API included with HDInsight clusters.
 services: hdinsight
-documentationcenter: ''
-author: Blackmist
-manager: jhubbard
-editor: cgronlun
-tags: azure-portal
+author: hrasheed-msft
+ms.reviewer: jasonh
 
-ms.assetid: 2400530f-92b3-47b7-aa48-875f028765ff
 ms.service: hdinsight
 ms.custom: hdinsightactive
-ms.devlang: na
-ms.topic: article
-ms.tgt_pltfrm: na
-ms.workload: big-data
-ms.date: 11/02/2017
-ms.author: larryfr
+ms.topic: conceptual
+ms.date: 04/23/2018
+ms.author: hrasheed
 
 ---
 # Manage HDInsight clusters by using the Ambari REST API
@@ -42,7 +35,7 @@ The examples in this document are provided for both the Bourne shell (bash) and 
 
 If using the __Bourne shell__ (Bash), you must have the following installed:
 
-* [cURL](http://curl.haxx.se/): cURL is a utility that can be used to work with REST APIs from the command line. In this document, it is used to communicate with the Ambari REST API.
+* [cURL](https://curl.haxx.se/): cURL is a utility that can be used to work with REST APIs from the command line. In this document, it is used to communicate with the Ambari REST API.
 
 Whether using Bash or PowerShell, you must also have [jq](https://stedolan.github.io/jq/) installed. Jq is a utility for working with JSON documents. It is used in **all** the Bash examples, and **one** of the PowerShell examples.
 

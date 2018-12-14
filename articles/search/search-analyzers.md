@@ -1,21 +1,17 @@
 ---
-title: Analyzers in Azure Search | Microsoft Docs
+title: Analyzers for linguistic and text processing - Azure Search
 description: Assign analyzers to searchable text fields in an index to replace default standard Lucene with custom, predefined or language-specific alternatives.
 services: search
-manager: jhubbard
-author: HeidiSteen
-documentationcenter: ''
-
 ms.service: search
-ms.devlang: NA
-ms.workload: search
-ms.topic: article
-ms.tgt_pltfrm: na
+ms.topic: conceptual
 ms.date: 09/11/2017
 ms.author: heidist
+manager: cgronlun
+author: HeidiSteen
+ms.custom: seodec2018
 ---
 
-# Analyzers in Azure Search
+# Analyzers for text processing in Azure Search
 
 An *analyzer* is a component of [full text search](search-lucene-query-architecture.md) responsible for processing text in query strings and indexed documents. The following transformations are typical during analysis:
 
@@ -134,7 +130,7 @@ Walking through this example:
      "tokenizers":[
         {
            "name":"my_standard_tokenizer",
-           "@odata.type":"#Microsoft.Azure.Search.StandardTokenizer",
+           "@odata.type":"#Microsoft.Azure.Search.StandardTokenizerV2",
            "maxTokenLength":20
         }
      ],

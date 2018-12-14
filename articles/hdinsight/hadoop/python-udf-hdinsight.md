@@ -1,27 +1,18 @@
 ---
-title: Python UDF with Apache Hive and Pig - Azure HDInsight | Microsoft Docs
-description: Learn how to use Python User Defined Functions (UDF) from Hive and Pig in HDInsight, the Hadoop technology stack on Azure.
+title: Python UDF with Apache Hive and Apache Pig - Azure HDInsight 
+description: Learn how to use Python User Defined Functions (UDF) from Apache Hive and Apache Pig in HDInsight, the Apache Hadoop technology stack on Azure.
 services: hdinsight
-documentationcenter: ''
-author: Blackmist
-manager: jhubbard
-editor: cgronlun
-tags: azure-portal
-
-ms.assetid: c44d6606-28cd-429b-b535-235e8f34a664
 ms.service: hdinsight
-ms.workload: big-data
-ms.tgt_pltfrm: na
-ms.devlang: python
-ms.topic: article
-ms.date: 10/06/2017
-ms.author: larryfr
-
+author: hrasheed-msft
+ms.author: hrasheed
+ms.reviewer: jasonh
+ms.topic: conceptual
+ms.date: 02/27/2018
 ms.custom: H1Hack27Feb2017,hdinsightactive
 ---
-# Use Python User Defined Functions (UDF) with Hive and Pig in HDInsight
+# Use Python User Defined Functions (UDF) with Apache Hive and Apache Pig in HDInsight
 
-Learn how to use Python user-defined functions (UDF) with Apache Hive and Pig in Hadoop on Azure HDInsight.
+Learn how to use Python user-defined functions (UDF) with Apache Hive and Apache Pig in Apache Hadoop on Azure HDInsight.
 
 ## <a name="python"></a>Python on HDInsight
 
@@ -52,7 +43,7 @@ add file wasb:///hiveudf.py;
 
 SELECT TRANSFORM (clientid, devicemake, devicemodel)
     USING 'python hiveudf.py' AS
-    (clientid string, phoneLable string, phoneHash string)
+    (clientid string, phoneLabel string, phoneHash string)
 FROM hivesampletable
 ORDER BY clientid LIMIT 50;
 ```
@@ -64,7 +55,7 @@ add file wasb:///hiveudf.py;
 
 SELECT TRANSFORM (clientid, devicemake, devicemodel)
     USING 'D:\Python27\python.exe hiveudf.py' AS
-    (clientid string, phoneLable string, phoneHash string)
+    (clientid string, phoneLabel string, phoneHash string)
 FROM hivesampletable
 ORDER BY clientid LIMIT 50;
 ```
@@ -163,7 +154,7 @@ def create_structure(input):
     return date, time, classname, level, detail
 ```
 
-In the Pig Latin example, we defined the `LINE` input as a chararray because there is no consistent schema for the input. The Python script transforms the data into a consistent schema for output.
+In the Pig Latin example, the `LINE` input is defined as a chararray because there is no consistent schema for the input. The Python script transforms the data into a consistent schema for output.
 
 1. The `@outputSchema` statement defines the format of the data that is returned to Pig. In this case, it's a **data bag**, which is a Pig data type. The bag contains the following fields, all of which are chararray (strings):
 
@@ -175,7 +166,7 @@ In the Pig Latin example, we defined the `LINE` input as a chararray because the
 
 2. Next, the `def create_structure(input)` defines the function that Pig passes line items to.
 
-3. The example data, `sample.log`, mostly conforms to the date, time, classname, level, and detail schema we want to return. However, it contains a few lines that begin with `*java.lang.Exception*`. These lines must be modified to match the schema. The `if` statement checks for those, then massages the input data to move the `*java.lang.Exception*` string to the end, bringing the data in-line with our expected output schema.
+3. The example data, `sample.log`, mostly conforms to the date, time, classname, level, and detail schema. However, it contains a few lines that begin with `*java.lang.Exception*`. These lines must be modified to match the schema. The `if` statement checks for those, then massages the input data to move the `*java.lang.Exception*` string to the end, bringing the data in-line with the expected output schema.
 
 4. Next, the `split` command is used to split the data at the first four space characters. The output is assigned into `date`, `time`, `classname`, `level`, and `detail`.
 
@@ -288,7 +279,7 @@ After uploading the files, use the following steps to run the Hive and Pig jobs.
     #from pig_util import outputSchema
     ```
 
-    This modifies the Python script to work with C Python instead of Jython. Once the change has been made, use **Ctrl+X** to exit the editor. Select **Y**, and then **Enter** to save the changes.
+    This line modifies the Python script to work with C Python instead of Jython. Once the change has been made, use **Ctrl+X** to exit the editor. Select **Y**, and then **Enter** to save the changes.
 
 6. Use the `pig` command to start the shell again. Once you are at the `grunt>` prompt, use the following to run the Python script using the C Python interpreter.
 
@@ -382,7 +373,7 @@ The error information (STDERR) and the result of the job (STDOUT) are also logge
 
 ## <a name="next"></a>Next steps
 
-If you need to load Python modules that aren't provided by default, see [How to deploy a module to Azure HDInsight](http://blogs.msdn.com/b/benjguin/archive/2014/03/03/how-to-deploy-a-python-module-to-windows-azure-hdinsight.aspx).
+If you need to load Python modules that aren't provided by default, see [How to deploy a module to Azure HDInsight](https://blogs.msdn.com/b/benjguin/archive/2014/03/03/how-to-deploy-a-python-module-to-windows-azure-hdinsight.aspx).
 
 For other ways to use Pig, Hive, and to learn about using MapReduce, see the following documents:
 

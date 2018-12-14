@@ -3,8 +3,8 @@ title: Azure PowerShell Script Sample - Scale a web app manually | Microsoft Doc
 description: Azure PowerShell Script Sample - Scale a web app manually
 services: app-service\web
 documentationcenter: 
-author: syntaxc4
-manager: erikre
+author: msangapu
+manager: jeconnoc
 editor: 
 tags: azure-service-management
 
@@ -15,19 +15,20 @@ ms.topic: sample
 ms.tgt_pltfrm: na
 ms.workload: web
 ms.date: 03/20/2017
-ms.author: cfowler
+ms.author: msangapu
 ms.custom: mvc
+ms.custom: seodec18
 ---
 
-# Scale a web app manually
+# Scale a web app manually using PowerShell
 
 In this scenario you will learn to create a resource group, app service plan and web app. You will then scale the App Service Plan from a single instance to multiple instances.
 
-If needed, install the Azure PowerShell using the instruction found in the [Azure PowerShell guide](/powershell/azure/overview), and then run `Login-AzureRmAccount` to create a connection with Azure.
+If needed, install the Azure PowerShell using the instruction found in the [Azure PowerShell guide](/powershell/azure/overview), and then run `Connect-AzureRmAccount` to create a connection with Azure.
 
 ## Sample script
 
-[!code-powershell[main](../../../powershell_scripts/app-service/scale-manual/scale-manual.ps1 "Scale a web app manually")]
+[!code-azurepowershell-interactive[main](../../../powershell_scripts/app-service/scale-manual/scale-manual.ps1 "Scale a web app manually")]
 
 ## Clean up deployment 
 
