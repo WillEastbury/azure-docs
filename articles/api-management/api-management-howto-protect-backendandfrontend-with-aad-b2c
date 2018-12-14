@@ -22,11 +22,17 @@ ms.author: apimpm
 
 This guide shows you how to configure your Azure API Management instance to protect an API, by using the OAuth 2.0 protocol with Azure Active Directory (Azure AD) B2C, and how to flow claims data through API management to be used into a backend function. 
 
+## Aims
+The idea of this document is to show how API-Management can be used in a real world scenario with the Azure Functions and AAD B2C services to capture additional data and flow it through API Management.
+The basic premise of the document is that there is a JavaScript Single Page Application calling through and retrieving data from the API about the user, in practice you will use this data in the function API tier to feed into some kind of business logic, 
+in this case we will simply record a CRMID field as a custom attribute and flow it through API-management to secure the API and validate the JWT in flight.
+The ‘logged in as’ is picked up from the client side token when we log in, the ‘Custom Claim’ comes back from the Azure Function code to show that we can decipher the token and use the claim in the function’s business logic.
+
 ## Prerequisites
 To follow the steps in this article, you must have:
-* An Azure Storage Account to host the frontend JS Single Page App
+* An Azure v2 Storage Account to host the frontend JS Single Page App
 * An API Management instance
-* A function app (sample code provided)
+* A Function app to host the back end API (sample code provided)
 * An Azure AD B2C tenant
 
 ## Overview
