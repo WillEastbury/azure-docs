@@ -105,6 +105,7 @@ Before we can capture and flow any custom claims or register the applications th
 > B2C Policies allow you to expose the AAD B2C login endpoints to be able to capture different data components and log in users in different ways
 > In this case we configured a sign up and sign in endpoint, which exposed a well-known condfiguration endpoint, specifically our created policy was identified in the URL by the p= parameter
 > Once this is done – you now have a functional Business to Consumer identity platform that will sign users into multiple applications. 
+> If you want to you can click 'run now' here to go through the sign up and sign in process and get a feel for what it will do in practice, but the redirection step at the end will fail as we haven't yet configured this.
 
 # [Optional] Configure API Management with the new AAD B2C Client IDs and keys to to Enable OAuth 2.0 user authorization in the Developer Console
 1. Switch back to your standard AAD tenant in the Azure portal and open the *API management blade*, then open *your instance*.
@@ -189,6 +190,10 @@ Before we can capture and flow any custom claims or register the applications th
 3. Update your settings by selecting “Oauth 2.0” from the user authorization radio button.
 4. Select the OAuth server that you defined earlier.
 5. Check the ‘Override scope’ checkbox and enter the scope you recorded for the BACKEND API call earlier on.
+
+# Configure the redirect URIs for the Application Registrations in B2C
+1. Open the AAD B2C blade and navigate to the application registration for the Developer Portal
+2. Set the 'Reply URL' entry to the one you noted down when you configured the redirect_uri of the auth code grant in API Management earlier.
 
 > The following section does not apply to the **Consumption** tier, which does not support the developer portal.
 
@@ -297,6 +302,10 @@ clientID: 'the registered application id of the CLIENT OR FRONTEND Application i
 	webApi: ‘{the actual address of the API when called through api management}’, // This was ‘request url’ in the developer portal
 	subKey: '{the api-m subscription key you want to call them with}' // this was the value in ‘ocp-apim-subscription-key
         };
+
+# Configure the redirect URIs for the Application Registrations in B2C
+1. Open the AAD B2C blade and navigate to the application registration for the JavaScript Frontend Application
+2. Set the redirect URL to the one you noted down when you setup the static website primary endpoint above
 
 > [!NOTE] 
 > This configuration will result in a client of the frontend application receiving an access token with appropriate claims from AAD B2C 
